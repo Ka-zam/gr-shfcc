@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# GRC generated files
+top_block.py
