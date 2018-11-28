@@ -1,4 +1,4 @@
-function [out,t] = sinepn(fc,fs, deltavar, N)
+function [out,t,pha] = sinepn(fc,fs, deltavar, N)
 
 t = linspace(0,(N-1)/fs,N)';
 

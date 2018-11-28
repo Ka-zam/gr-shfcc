@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<block>
+  <name>Phase Noise Mixer</name>
+  <key>shfcc_phase_noise_mixer_cc</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.phase_noise_mixer_cc($fc, $fs, $k0, $k2, $k3, $impair)</make>
+  <callback>set_fc($fc)</callback>
+
+  <param>
+    <name>Mixer frequency</name>
+    <key>fc</key>
+    <type>real</type>
+  </param>
+  
+  <param>
+    <name>Sampling rate</name>
+    <key>fs</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>K0</name>
+    <key>k0</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>K2</name>
+    <key>k2</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>K3</name>
+    <key>k3</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Impairment active</name>
+    <key>impair</key>
+    <value>False</value>
+    <type>bool</type>
+  </param>        
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>
