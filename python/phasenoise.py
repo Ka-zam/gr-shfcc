@@ -14,29 +14,34 @@ def db20(x):
 def db10(x):
 	return 10.*np.log10(x)
 
+def zero_cross(k,neg,pos):
+	return k - neg/(pos-neg)
+
+
 fname = sys.argv[1]
 
 fs,s = wavfile.read(fname)
-#Do left channel
-s = s[:,0]
+
+if s.ndim == 2:
+	#Do left channel
+	s = s[:,0]
 
 
 cross = np.array((),dtype='float32')
 
-def pos_zero_cross(k,neg,pos):
-	return k - neg/(pos-neg)
-
-def neg_zero_cross(k,neg,pos):
-	return k - neg/(pos-neg)	
-
 for k in xrange(1,len(s)-1):
     if ( np.sign(s[k])==-1) and (np.sign(s[k+1])==1):
-    	cross = np.append(cross , pos_zero_cross(k,s[k],s[k+1]) )
+    	cross = np.append(cross , zero_cross(k,s[k],s[k+1]) )
+    elif ( np.sign(s[k])==1) and (np.sign(s[k+1])==-1):
+    	cross = np.append(cross , zero_cross(k,s[k],s[k+1]) )
+    elif np.abs(s[k]) < 1.0e-20:
+    	cross = np.append( cross , k ) 
 
 
 #Calculate period time
 period = np.diff(cross)
 period /= fs
+period *= 2.0 #Detect half periods
 freq = 1./period
 
 #Plot everything
