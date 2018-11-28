@@ -17,7 +17,7 @@ def db10(x):
 fname = sys.argv[1]
 
 fs,s = wavfile.read(fname)
-s = s[:2**18,0]
+s = s[290000:290000+2**16,0]
 
 #Some windowing
 win = np.linspace(0,1,100,dtype='float32')
@@ -161,7 +161,7 @@ cap = 12.e3*np.log2(1+snr)
 print("Shannon capacity: %8.3f bps" % cap )
 
 
-PLOT = False
-
+PLOT = True
+#PLOT = False
 if PLOT:
 	show()
