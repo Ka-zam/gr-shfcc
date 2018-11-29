@@ -6,6 +6,7 @@ from scipy.io import wavfile
 import numpy as np
 import scipy as sp
 import scipy.signal as sig
+import allantools
 import sys
 
 def db20(x):
@@ -103,6 +104,14 @@ else:
 print("Signal power  : %8.3f dB"  % db10(sigpwr))
 print("3rd harmonic  : %8.3f dBc" % db20(h3pwr/sigpwr))
 print("5th harmonic  : %8.3f dBc" % db20(h5pwr/sigpwr))
+
+#Allan variance
+mpl.pyplot.figure(4)
+t = np.logspace(0,3,50)
+(t2,ad,ade,adn) = allantools.oadev(freq/3000.-1, data_type='freq', rate=3000)
+mpl.pyplot.loglog(t2,ad)
+grid(True)
+
 
 PLOT = True
 #PLOT = False
