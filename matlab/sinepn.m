@@ -1,13 +1,16 @@
-function [out,t,pha] = sinepn(fc,fs, deltavar, N)
+function [out,t,pha] = sinepn(fc,fs, var0 , var3 , N)
 
 t = linspace(0,(N-1)/fs,N)';
 
-del = deltavar*randn(N,1);
+var0_vec = var0*randn(N,1);
+var3_vec = var3*randn(N,1);
 
-pha = zeros(size(del));
+pha = zeros(size(var0_vec));
 
 for k=2:length(pha)
-    pha(k) = pha(k-1) + del(k);
+    pha(k) = pha(k-1) + var3_vec(k);
 end
+
+pha = pha + var0_vec;
 
 out = sin(2*pi*fc*t + pha);

@@ -3,6 +3,7 @@
 
 #include <shfcc/phase_noise_mixer_cc.h>
 #include <gnuradio/gr_complex.h>
+#include <gnuradio/random.h>
 #include <cmath>
 #include <cstring> //memcpy
 #include <volk/volk.h>
@@ -22,6 +23,10 @@ namespace gr {
       float d_k3;
       bool d_impair;
       uint32_t d_counter;
+
+      float d_k2_last_value;
+      gr::random d_k0_rng;
+      gr::random d_k2_rng;
      	
      public:
       phase_noise_mixer_cc_impl(float fc, float fs, float k0, float k2, float k3, bool impair);

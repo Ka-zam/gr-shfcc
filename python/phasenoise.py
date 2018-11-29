@@ -82,7 +82,7 @@ mpl.pyplot.figure(3)
 
 pbins , Pxx = sig.welch(s, fs=fs, nperseg=16384, noverlap=None)  
 fbin = pbins[1]-pbins[0]
-
+Pxx /= max(Pxx)
 #plot(pbins,db10(Pxx))
 mpl.pyplot.semilogx(pbins,db10(Pxx))
 grid(True)
