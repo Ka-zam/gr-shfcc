@@ -16,18 +16,21 @@ namespace gr {
      private:
      	gr_complex d_phase;
      	gr_complex d_pha_inc;
-     	float d_fc;
+      uint32_t d_counter;
+
+      float d_fc;
       float d_fs;
+
       float d_k0;
       float d_k2;
       float d_k3;
-      bool d_impair;
-      uint32_t d_counter;
-
       float d_k2_last_value;
+      
+      bool d_impair;
+
       gr::random d_k0_rng;
       gr::random d_k2_rng;
-     	
+
      public:
       phase_noise_mixer_cc_impl(float fc, float fs, float k0, float k2, float k3, bool impair);
       ~phase_noise_mixer_cc_impl();
@@ -36,6 +39,7 @@ namespace gr {
       void set_k2(float k2);
       void set_k3(float k3);
       void set_impair(bool impair);
+      gr_complex rotate(gr_complex in);
 
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,

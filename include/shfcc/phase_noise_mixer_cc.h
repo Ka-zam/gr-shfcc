@@ -31,7 +31,7 @@ namespace gr {
       virtual void set_k0(float k0) = 0;
       virtual void set_k2(float k2) = 0;
       virtual void set_k3(float k3) = 0;
-      virtual void set_impair(bool impair) = false;
+      virtual void set_impair(bool impair) = 0;
 
     };
 

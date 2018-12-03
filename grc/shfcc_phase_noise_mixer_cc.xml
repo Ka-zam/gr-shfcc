@@ -6,6 +6,8 @@
   <import>import shfcc</import>
   <make>shfcc.phase_noise_mixer_cc($fc, $fs, $k0, $k2, $k3, $impair)</make>
   <callback>set_fc($fc)</callback>
+  <callback>set_k0($k0)</callback>
+  <callback>set_k2($k2)</callback>
 
   <param>
     <name>Mixer frequency</name>

@@ -20,17 +20,21 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
-      d_fc = fc;
       d_fs = fs;
-      d_k0 = k0;
-      d_k2 = k2;
-      d_k3 = k3;
-      d_impair = impair;
       d_counter = 0;
 
       d_phase = lv_cmake(1.f , 0.f);
-      //d_pha_inc = exp( gr_complex(0 , d_fc*2.0f*M_PI/d_fs) );
+
+      set_impair(impair);
       set_fc(d_fc);
+      set_k0(k0);
+      set_k2(k2);
+      set_k3(k3);
+
+      long seed = 123456789;
+
+      //d_k0_rng(seed);
+      //d_k2_rng(seed);
 
     }
 
@@ -67,7 +71,21 @@ namespace gr {
     phase_noise_mixer_cc_impl::set_impair(bool impair)
     {
       d_impair = impair;
-    }     
+    }    
+
+    gr_complex 
+    phase_noise_mixer_cc_impl::rotate(gr_complex in)
+    {
+      d_counter++;
+
+        gr_complex z = in * d_phase;    // rotate in by phase
+        d_phase *= d_pha_inc;      // incr our phase (complex mult == add phases)
+
+        if((d_counter % 512) == 0)
+          d_phase /= std::abs(d_phase);     // Normalize to ensure multiplication is rotation
+
+        return z;
+      }
 
     int
     phase_noise_mixer_cc_impl::work(int noutput_items,
@@ -78,8 +96,42 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
 
       if (d_impair){
-        //
-        std::memcpy(out , in , noutput_items*sizeof(gr_complex) );
+        
+        // Noise modelling
+        float* k0_pha = (float *) malloc(noutput_items*sizeof(float));
+        float* k2_pha = (float *) malloc(noutput_items*sizeof(float));
+
+        for (int i = 0; i < noutput_items; i++)
+        {
+          k0_pha[i] = d_k0*d_k0_rng.gasdev();
+        }
+
+        k2_pha[0] = d_k2_last_value;
+
+        for (int i = 0; i < noutput_items - 1; i++)
+        {
+          k2_pha[i] = k2_pha[i-1] + d_k2*d_k2_rng.gasdev();
+        }
+
+        d_k2_last_value = k2_pha[noutput_items - 1];
+
+        for (int i = 0; i < noutput_items; i++)
+        {
+          k0_pha[i] = k0_pha[i] + k2_pha[i];
+        }
+
+
+
+        for (int i = 0; i < noutput_items; i++)
+        {
+          out[i] = rotate(in[i]) * exp( gr_complex(0 , k0_pha[i]) );
+        }
+
+        free(k0_pha);
+        free(k2_pha);
+
+        // Generate output signal
+        //std::memcpy(out , in , noutput_items*sizeof(gr_complex) );
 
       }
       else{
