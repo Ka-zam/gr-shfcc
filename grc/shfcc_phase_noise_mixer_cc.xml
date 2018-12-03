@@ -8,6 +8,7 @@
   <callback>set_fc($fc)</callback>
   <callback>set_k0($k0)</callback>
   <callback>set_k2($k2)</callback>
+  <callback>set_impair($impair)</callback>
 
   <param>
     <name>Mixer frequency</name>
@@ -40,7 +41,7 @@
   </param>
 
   <param>
-    <name>Impairment active</name>
+    <name>Impairment</name>
     <key>impair</key>
     <value>False</value>
     <type>bool</type>

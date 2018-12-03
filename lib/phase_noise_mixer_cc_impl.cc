@@ -22,11 +22,12 @@ namespace gr {
     {
       d_fs = fs;
       d_counter = 0;
+      d_k2_last_value = 0.f;
 
       d_phase = lv_cmake(1.f , 0.f);
 
       set_impair(impair);
-      set_fc(d_fc);
+      set_fc(fc);
       set_k0(k0);
       set_k2(k2);
       set_k3(k3);
@@ -106,7 +107,7 @@ namespace gr {
           k0_pha[i] = d_k0*d_k0_rng.gasdev();
         }
 
-        k2_pha[0] = d_k2_last_value;
+        k2_pha[0] = d_k2_last_value + d_k2*d_k2_rng.gasdev();
 
         for (int i = 0; i < noutput_items - 1; i++)
         {
