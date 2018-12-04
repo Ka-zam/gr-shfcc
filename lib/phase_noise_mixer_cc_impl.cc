@@ -95,55 +95,31 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
+      
+      if (noutput_items < 2){
+        return 0;
+      }
 
       if (d_impair){
-        
-        // Noise modelling
-        float* k0_pha = (float *) malloc(noutput_items*sizeof(float));
-        float* k2_pha = (float *) malloc(noutput_items*sizeof(float));
 
-        for (int i = 0; i < noutput_items; i++)
-        {
-          k0_pha[i] = d_k0*d_k0_rng.gasdev();
+        float k2_pha = d_k2_last_value + d_k2*d_k2_rng.gasdev();  
+        float k0_pha = d_k0*d_k0_rng.gasdev();
+             
+        for (int i = 0; i < noutput_items-1; i++)
+        { 
+          out[i] = rotate(in[i]) * exp( gr_complex(0 , k0_pha + k2_pha) );
+          k0_pha  = d_k0*d_k0_rng.gasdev();
+          k2_pha += d_k2*d_k2_rng.gasdev();
         }
-
-        k2_pha[0] = d_k2_last_value + d_k2*d_k2_rng.gasdev();
-
-        for (int i = 1; i < noutput_items; i++)
-        {
-          k2_pha[i] = k2_pha[i-1] + d_k2*d_k2_rng.gasdev();
-        }
-
-        d_k2_last_value = k2_pha[noutput_items - 1];
-
-        for (int i = 0; i < noutput_items; i++)
-        {
-          k0_pha[i] = k0_pha[i] + k2_pha[i];
-        }
-
-
-
-        for (int i = 0; i < noutput_items; i++)
-        {
-          out[i] = rotate(in[i]) * exp( gr_complex(0 , k0_pha[i]) );
-        }
-
-        free(k0_pha);
-        free(k2_pha);
-
-        // Generate output signal
-        //std::memcpy(out , in , noutput_items*sizeof(gr_complex) );
-
+        out[noutput_items-1] = 
+            rotate(in[noutput_items-1]) * exp( gr_complex(0 , k0_pha + k2_pha) );
+        d_k2_last_value = k2_pha;                
       }
       else{
-        //
-        volk_32fc_s32fc_x2_rotator_32fc(out, in, d_pha_inc, &d_phase, noutput_items);        
-
+        volk_32fc_s32fc_x2_rotator_32fc(out, in, d_pha_inc, &d_phase, noutput_items);
       }
-
       return noutput_items;
     }
-
   } /* namespace shfcc */
 } /* namespace gr */
 

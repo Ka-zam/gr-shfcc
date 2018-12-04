@@ -418,11 +418,11 @@
     </param>
     <param>
       <key>step</key>
-      <value>.01</value>
+      <value>.001</value>
     </param>
     <param>
       <key>stop</key>
-      <value>.1</value>
+      <value>.01</value>
     </param>
     <param>
       <key>rangeType</key>
@@ -1198,7 +1198,7 @@
     </param>
     <param>
       <key>window</key>
-      <value>window.hann(fft_len)</value>
+      <value>window.hanning(fft_len)</value>
     </param>
   </block>
   <block>
@@ -1911,7 +1911,7 @@
     </param>
     <param>
       <key>srate</key>
-      <value>1</value>
+      <value>samp_rate</value>
     </param>
     <param>
       <key>stemplot</key>
