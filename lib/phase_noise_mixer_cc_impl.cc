@@ -109,7 +109,7 @@ namespace gr {
 
         k2_pha[0] = d_k2_last_value + d_k2*d_k2_rng.gasdev();
 
-        for (int i = 0; i < noutput_items - 1; i++)
+        for (int i = 1; i < noutput_items; i++)
         {
           k2_pha[i] = k2_pha[i-1] + d_k2*d_k2_rng.gasdev();
         }
