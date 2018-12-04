@@ -22,7 +22,6 @@ namespace gr {
     {
       d_fs = fs;
       d_counter = 0;
-      d_k2_last_value = 0.f;
 
       d_phase = lv_cmake(1.f , 0.f);
 
@@ -31,12 +30,13 @@ namespace gr {
       set_k0(k0);
       set_k2(k2);
       set_k3(k3);
-
+      
+      d_k2_last_value = d_k2*d_k2_rng.gasdev();
       long seed = 123456789;
+      set_min_noutput_items(2);
 
       //d_k0_rng(seed);
       //d_k2_rng(seed);
-
     }
 
     phase_noise_mixer_cc_impl::~phase_noise_mixer_cc_impl()
@@ -96,10 +96,6 @@ namespace gr {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
       
-      if (noutput_items < 2){
-        return 0;
-      }
-
       if (d_impair){
 
         float k2_pha = d_k2_last_value + d_k2*d_k2_rng.gasdev();  
