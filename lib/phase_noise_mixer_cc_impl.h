@@ -40,6 +40,7 @@ namespace gr {
       phase_noise_mixer_cc_impl(float fc, float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair);
       ~phase_noise_mixer_cc_impl();
       void set_fc(float fc);
+      void set_fc_nominal(float fc_nom);
       void set_k0(float k0);
       void set_k2(float k2);
       void set_cfo_ampl(float cfo_ampl);

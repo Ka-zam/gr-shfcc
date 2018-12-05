@@ -28,6 +28,7 @@ namespace gr {
        */
       static sptr make(float fc, float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair);
       virtual void set_fc(float fc) = 0;
+      virtual void set_fc_nominal(float fc_nom) = 0;
       virtual void set_k0(float k0) = 0;
       virtual void set_k2(float k2) = 0;
       virtual void set_cfo_ampl(float cfo_ampl) = 0;

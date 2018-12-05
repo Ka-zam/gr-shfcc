@@ -5,7 +5,7 @@
   <category>[shfcc]</category>
   <import>import shfcc</import>
   <make>shfcc.phase_noise_mixer_cc($fc, $fs, $k0, $k2, $cfo_ampl, $cfo_freq, $impair)</make>
-  <callback>set_fc($fc)</callback>
+  <callback>set_fc_nominal($fc)</callback>
   <callback>set_k0($k0)</callback>
   <callback>set_k2($k2)</callback>
   <callback>set_cfo_ampl($cfo_ampl)</callback>

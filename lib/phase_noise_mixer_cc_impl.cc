@@ -27,12 +27,12 @@ namespace gr {
       d_phase = lv_cmake(1.f , 0.f);
 
       set_impair(impair);
-      set_fc(fc);
-      d_fc_nominal = d_fc;
+      //set_fc(fc);
+      set_fc_nominal(fc);
       set_k0(k0);
       set_k2(k2);
       
-      d_k2_last_value = d_k2*d_k2_rng.gasdev();
+      d_k2_last_value = 0.f;
       set_min_noutput_items(2);
 
       d_cfo_ampl = cfo_ampl;
@@ -43,6 +43,14 @@ namespace gr {
 
     phase_noise_mixer_cc_impl::~phase_noise_mixer_cc_impl()
     {
+    }
+
+    void
+    phase_noise_mixer_cc_impl::set_fc_nominal(float fc_nom)
+    {
+      d_fc_nominal = fc_nom;
+      //d_pha_inc = exp( gr_complex(0 , fc_nom*2.0*M_PI/d_fs) );
+      set_fc(fc_nom);
     }
 
     void
@@ -81,7 +89,12 @@ namespace gr {
     phase_noise_mixer_cc_impl::set_impair(bool impair)
     {
       d_impair = impair;
-      if (!d_impair) {set_fc(d_fc_nominal);}
+      //Set frequency to nominal value
+      set_fc_nominal(d_fc_nominal);
+      d_k2_last_value = 0.f;
+      if (d_impair){
+        d_phase = gr_complex(1.,1.);
+      }
     }    
 
     gr_complex 
