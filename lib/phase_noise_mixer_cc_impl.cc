@@ -9,13 +9,14 @@ namespace gr {
   namespace shfcc {
 
     phase_noise_mixer_cc::sptr
-    phase_noise_mixer_cc::make(float fc, float fs, float k0, float k2, float k3, bool impair)
+    phase_noise_mixer_cc::make(float fc, float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
     {
       return gnuradio::get_initial_sptr
-        (new phase_noise_mixer_cc_impl(fc, fs, k0, k2, k3, impair));
+        (new phase_noise_mixer_cc_impl(fc, fs, k0, k2, cfo_ampl, cfo_freq, impair));
     }
 
-    phase_noise_mixer_cc_impl::phase_noise_mixer_cc_impl(float fc, float fs, float k0, float k2, float k3, bool impair)
+    phase_noise_mixer_cc_impl::phase_noise_mixer_cc_impl(float fc, 
+      float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
       : gr::sync_block("phase_noise_mixer_cc",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -27,16 +28,17 @@ namespace gr {
 
       set_impair(impair);
       set_fc(fc);
+      d_fc_nominal = d_fc;
       set_k0(k0);
       set_k2(k2);
-      set_k3(k3);
       
       d_k2_last_value = d_k2*d_k2_rng.gasdev();
-      long seed = 123456789;
       set_min_noutput_items(2);
 
-      //d_k0_rng(seed);
-      //d_k2_rng(seed);
+      d_cfo_ampl = cfo_ampl;
+      d_cfo_pha = 0.f;
+      d_cfo_pha_inc = 2.0*M_PI*cfo_freq/d_fs;
+
     }
 
     phase_noise_mixer_cc_impl::~phase_noise_mixer_cc_impl()
@@ -47,7 +49,7 @@ namespace gr {
     phase_noise_mixer_cc_impl::set_fc(float fc)
     {
       d_fc = fc;
-      d_pha_inc = exp( gr_complex(0 , d_fc*2.0f*M_PI/d_fs) );
+      d_pha_inc = exp( gr_complex(0 , fc*2.0*M_PI/d_fs) );
     }
 
     void
@@ -63,15 +65,23 @@ namespace gr {
     }
 
     void
-    phase_noise_mixer_cc_impl::set_k3(float k3)
+    phase_noise_mixer_cc_impl::set_cfo_freq(float cfo_freq)
     {
-      d_k3 = k3;
-    }   
+      d_cfo_freq = cfo_freq;
+      d_cfo_pha_inc = 2.0*M_PI*cfo_freq/d_fs;
+    }  
+
+    void
+    phase_noise_mixer_cc_impl::set_cfo_ampl(float cfo_ampl)
+    {
+      d_cfo_ampl = cfo_ampl;
+    }       
 
     void
     phase_noise_mixer_cc_impl::set_impair(bool impair)
     {
       d_impair = impair;
+      if (!d_impair) {set_fc(d_fc_nominal);}
     }    
 
     gr_complex 
@@ -102,10 +112,16 @@ namespace gr {
         float k0_pha = d_k0*d_k0_rng.gasdev();
              
         for (int i = 0; i < noutput_items-1; i++)
-        { 
+        {
+          //Calculate center frequency offset
           out[i] = rotate(in[i]) * exp( gr_complex(0 , k0_pha + k2_pha) );
           k0_pha  = d_k0*d_k0_rng.gasdev();
           k2_pha += d_k2*d_k2_rng.gasdev();
+          if (d_cfo_ampl > 1.e-6){
+            d_cfo_pha += d_cfo_pha_inc;
+            if (d_cfo_pha > 2*M_PI) {d_cfo_pha -= 2*M_PI;}
+            set_fc( d_fc_nominal + d_cfo_ampl*cos(d_cfo_pha) );
+          }
         }
         out[noutput_items-1] = 
             rotate(in[noutput_items-1]) * exp( gr_complex(0 , k0_pha + k2_pha) );

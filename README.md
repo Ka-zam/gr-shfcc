@@ -1,2 +1,2 @@
 # gr-shfcc
-Super High fidelity Compact Cassette
+Super High Fidelity Compact Cassette

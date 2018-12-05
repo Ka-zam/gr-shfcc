@@ -4,10 +4,12 @@
   <key>shfcc_phase_noise_mixer_cc</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
-  <make>shfcc.phase_noise_mixer_cc($fc, $fs, $k0, $k2, $k3, $impair)</make>
+  <make>shfcc.phase_noise_mixer_cc($fc, $fs, $k0, $k2, $cfo_ampl, $cfo_freq, $impair)</make>
   <callback>set_fc($fc)</callback>
   <callback>set_k0($k0)</callback>
   <callback>set_k2($k2)</callback>
+  <callback>set_cfo_ampl($cfo_ampl)</callback>
+  <callback>set_cfo_freq($cfo_freq)</callback>
   <callback>set_impair($impair)</callback>
 
   <param>
@@ -35,11 +37,15 @@
   </param>
 
   <param>
-    <name>K3</name>
-    <key>k3</key>
+    <name>CFO Ampl</name>
+    <key>cfo_ampl</key>
     <type>real</type>
   </param>
-
+  <param>
+    <name>CFO Freq</name>
+    <key>cfo_freq</key>
+    <type>real</type>
+  </param>
   <param>
     <name>Impairment</name>
     <key>impair</key>
