@@ -1,0 +1,47 @@
+function [bb,idx] = bb_sample(snr,M,beta) 
+
+Nsym = 10*M;
+Nsps =  8;
+%beta = .15;
+%M = 16;
+%Nspan = 10;
+Nspan = rrcspan( beta );
+
+B = rcosdesign(beta , Nspan , Nsps , 'sqrt');
+delay = Nspan*Nsps/2;
+
+symbols = randi( M , Nsym , 1) - 1;
+%Just make sure to start a I=-1 Q=1
+symbols(1:5) = 0;
+%symbols(6:10) = 1;
+bb = qammod( symbols , M , 'UnitAveragePower', true );
+bb = upsample( bb , Nsps );
+%Add the delay as zeros at the end to get all the symbols
+bb = [ bb; zeros(4*delay,1) ];
+bb = filter( B , 1 , bb );
+%Add some noise
+nse_pwr = 10^(-snr*.05);
+nse = nse_pwr/sqrt(2)*( randn( size(bb) ) + 1j*randn( size(bb) ) );
+if snr < 95
+    bb = bb + nse;
+end
+%Filter it again on the receive side
+bb = filter( B , 1 , bb );
+idx = [1+2*delay:Nsps:2*delay+Nsym*Nsps]';
+
+function s = rrcspan( beta )
+if beta < 0.2
+    s = 30;
+elseif beta < 0.65
+    s = -floor( beta*44 ) + 33;
+    if mod(s,2) == 1
+        s = s + 1;
+    end
+else
+    s =  4;   
+end
+     
+
+
+
+
