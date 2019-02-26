@@ -1,6 +1,6 @@
-function [bb,idx] = bb_sample(snr,M,beta) 
+function [bb,sym_idx] = bb_sample(snr,M,beta,cfo,cpo,cpn) 
 
-Nsym = 10*M;
+Nsym = 100*M;
 Nsps =  8;
 %beta = .15;
 %M = 16;
@@ -27,7 +27,24 @@ if snr < 95
 end
 %Filter it again on the receive side
 bb = filter( B , 1 , bb );
-idx = [1+2*delay:Nsps:2*delay+Nsym*Nsps]';
+
+%Carrier Frequency Offset
+t = [0:length(bb)-1]';
+pha = 2*pi*cfo*t;
+%Carrier Phase Offset
+pha = pha + cpo*pi/180;
+
+%Carrier phase noise
+pha_pn = zeros(size(pha));
+for k=2:length(pha)
+    pha_pn(k) = pha_pn(k-1) + cpn/180*pi*randn(1);
+end
+pha = pha + pha_pn;
+
+carrier = exp(1j*pha);
+bb = bb.*carrier;
+
+sym_idx = [1+2*delay:Nsps:2*delay+Nsym*Nsps]';
 
 function s = rrcspan( beta )
 if beta < 0.2
