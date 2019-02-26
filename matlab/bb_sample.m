@@ -1,4 +1,4 @@
-function [bb,sym_idx] = bb_sample(snr,M,beta,cfo,cpo,cpn) 
+function [bb,sym_idx] = bb_sample(snr,M,beta,cfo,cpo,cpn, tau) 
 
 Nsym = 100*M;
 Nsps =  8;
@@ -35,14 +35,18 @@ pha = 2*pi*cfo*t;
 pha = pha + cpo*pi/180;
 
 %Carrier phase noise
-pha_pn = zeros(size(pha));
-for k=2:length(pha)
-    pha_pn(k) = pha_pn(k-1) + cpn/180*pi*randn(1);
-end
+%pha_pn = zeros(size(pha));
+%for k=2:length(pha)
+%    pha_pn(k) = pha_pn(k-1) + cpn/180*pi*randn(1);
+%end
+pha_pn = cumsum( cpn*pi/180*randn( size(pha) ) );
 pha = pha + pha_pn;
 
 carrier = exp(1j*pha);
 bb = bb.*carrier;
+
+%Timing Error resampling
+bb = interp1( bb , [1:length(bb)]'+tau );
 
 sym_idx = [1+2*delay:Nsps:2*delay+Nsym*Nsps]';
 
