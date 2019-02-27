@@ -1,12 +1,19 @@
-function [bb,sym_idx,rf] = bb_sample(Nsps,Nsym,symbols,snr,M,beta,cfo,cpo,cpn,tau) 
+function [bb,sym_idx,rf] = bb_sample(Nsps,Nsym,symbols,snr,M,beta,cfo,cpo,cpn,tau,P_pt,f_pt)
+
+if nargin < 12
+    f_pt = 0.00;
+end
+
+if nargin < 11
+    P_pt = -100;
+end
 
 %Nsym = 100*M;
 %Nsps =  8;
 %beta = .15;
 %M = 16;
 %Nspan = 10;
-P_pt = -20;
-f_pt = .10987654;
+%f_pt = .16;
 
 Nspan = rrcspan( beta );
 
@@ -17,7 +24,11 @@ delay = Nspan*Nsps/2;
 %Just make sure to start a I=-1 Q=1
 %symbols(1:5) = 0;
 %symbols(6:10) = 1;
-bb = qammod( symbols , M , 'UnitAveragePower', true );
+if M == 8
+    bb = pskmod( symbols , M , 0 , 'gray' );
+else
+    bb = qammod( symbols , M , 'UnitAveragePower', true );
+end
 bb = upsample( bb , Nsps );
 %Add the delay as zeros at the end to get all the symbols
 bb = [ bb; zeros(4*delay,1) ];
@@ -28,8 +39,6 @@ nse = nse_pwr/sqrt(2)*( randn( size(bb) ) + 1j*randn( size(bb) ) );
 if snr < 95
     bb = bb + nse;
 end
-%Filter it again on the receive side
-bb = filter( B , 1 , bb );
 
 %Carrier Frequency Offset
 t = [0:length(bb)-1]';
@@ -49,12 +58,17 @@ carrier = exp(1j*pha);
 rf = bb.*carrier;
 
 %Pilot tone
-pt_amp = 10^(P_pt/20);
-pt = pt_amp*exp(1j*2*pi*f_pt*t);
-rf = rf + pt;
+if f_pt > 0.00
+    pt_amp = 10^(P_pt/20);
+    pt = pt_amp*exp(1j*2*pi*f_pt*t);
+    rf = rf + pt;
+end
 %RF
 rf = real(rf);
 
+
+%Filter it again on the receive side
+bb = filter( B , 1 , bb );
 %Timing Error resampling
 bb = interp1( bb , [1:length(bb)]'+tau );
 
