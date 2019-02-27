@@ -1,18 +1,21 @@
-function [bb,sym_idx] = bb_sample(snr,M,beta,cfo,cpo,cpn, tau) 
+function [bb,sym_idx] = bb_sample(Nsps,Nsym,symbols,snr,M,beta,cfo,cpo,cpn,tau) 
 
-Nsym = 100*M;
-Nsps =  8;
+%Nsym = 100*M;
+%Nsps =  8;
 %beta = .15;
 %M = 16;
 %Nspan = 10;
+P_pt = -20;
+f_pt = .10987654;
+
 Nspan = rrcspan( beta );
 
 B = rcosdesign(beta , Nspan , Nsps , 'sqrt');
 delay = Nspan*Nsps/2;
 
-symbols = randi( M , Nsym , 1) - 1;
+%symbols = randi( M , Nsym , 1) - 1;
 %Just make sure to start a I=-1 Q=1
-symbols(1:5) = 0;
+%symbols(1:5) = 0;
 %symbols(6:10) = 1;
 bb = qammod( symbols , M , 'UnitAveragePower', true );
 bb = upsample( bb , Nsps );
@@ -44,6 +47,12 @@ pha = pha + pha_pn;
 
 carrier = exp(1j*pha);
 bb = bb.*carrier;
+
+%Pilot tone
+pt_amp = 10^(P_pt/20);
+pt = pt_amp*exp(1j*2*pi*f_pt*t);
+bb = bb + pt;
+
 
 %Timing Error resampling
 bb = interp1( bb , [1:length(bb)]'+tau );

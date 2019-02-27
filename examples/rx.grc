@@ -484,7 +484,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -538,7 +538,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -964,11 +964,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(112, 176)</value>
+      <value>(112, 240)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1156,11 +1156,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(176, 256)</value>
+      <value>(176, 320)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1224,6 +1224,57 @@
     <param>
       <key>phase_inc</key>
       <value>-2*np.pi*fc/samp_rate</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_wavfile_source</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/rnd_16qam_fc3k_fe_bm0_16bit.wav</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(440, 68)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>180</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_wavfile_source_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>nchan</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>repeat</key>
+      <value>True</value>
     </param>
   </block>
   <block>
@@ -1341,7 +1392,7 @@
     </param>
     <param>
       <key>max_dev</key>
-      <value>1</value>
+      <value>3</value>
     </param>
     <param>
       <key>minoutbuf</key>
@@ -2530,7 +2581,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(888, 464)</value>
+      <value>(944, 464)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3244,6 +3295,12 @@
   <connection>
     <source_block_id>blocks_rotator_cc_0</source_block_id>
     <sink_block_id>qtgui_waterfall_sink_x_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_wavfile_source_0</source_block_id>
+    <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
