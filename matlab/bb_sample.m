@@ -1,4 +1,4 @@
-function [bb,sym_idx] = bb_sample(Nsps,Nsym,symbols,snr,M,beta,cfo,cpo,cpn,tau) 
+function [bb,sym_idx,rf] = bb_sample(Nsps,Nsym,symbols,snr,M,beta,cfo,cpo,cpn,tau) 
 
 %Nsym = 100*M;
 %Nsps =  8;
@@ -46,13 +46,14 @@ pha_pn = cumsum( cpn*pi/180*randn( size(pha) ) );
 pha = pha + pha_pn;
 
 carrier = exp(1j*pha);
-bb = bb.*carrier;
+rf = bb.*carrier;
 
 %Pilot tone
 pt_amp = 10^(P_pt/20);
 pt = pt_amp*exp(1j*2*pi*f_pt*t);
-bb = bb + pt;
-
+rf = rf + pt;
+%RF
+rf = real(rf);
 
 %Timing Error resampling
 bb = interp1( bb , [1:length(bb)]'+tau );

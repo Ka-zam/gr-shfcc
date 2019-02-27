@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 26-Feb-2019 22:24:50
+% Last Modified by GUIDE v2.5 27-Feb-2019 12:16:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -87,7 +87,7 @@ function myplot(handles)
 % syms = handles.symbols;
 % nsym = handles.Nsym;
 % nsps = handles.Nsps;
-[bb,idx] = bb_sample(...
+[bb,idx,rf] = bb_sample(...
     handles.Nsps,...
     handles.Nsym,...
     handles.symbols,...
@@ -111,9 +111,17 @@ xlim(handles.axes2, [-1.5 1.5])
 ylim(handles.axes2, [-1.5 1.5])
 grid(handles.axes2, 'on')
 
-[pxx,w]= pwelch(bb(idx(1):idx(end)),[],[],[],96,'centered');
-plot(handles.axes3, w, 10*log10(pxx) );
-
+if strcmp( get(handles.bt_time_freq,'String') , 'Time' )
+    plot(handles.axes3, rf );
+    xlim(handles.axes3, [0 length(rf)])
+    ylim(handles.axes3, [-1.2 1.2])
+    grid(handles.axes3, 'on')
+else
+    [pxx,w]= pwelch(bb(idx(1):idx(end)),[],[],[],96,'centered');
+    plot(handles.axes3, w, 10*log10(pxx) );
+    xlim(handles.axes3, [-48 48])
+    grid(handles.axes3, 'on')
+end
 
 
 
@@ -125,9 +133,9 @@ function sl_snr_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+str = ['SNR: ' num2str( get(hObject,'Value') , '%4.1f' ) ' dB' ];
+set(handles.txt_snr,'String',str);
 myplot(handles);
-
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -278,3 +286,19 @@ function slider7_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on button press in bt_time_freq.
+function bt_time_freq_Callback(hObject, eventdata, handles)
+% hObject    handle to bt_time_freq (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of bt_time_freq
+if get(hObject,'Value') == 1
+    %Enabled for freq domain
+    set(hObject,'String','Freq');
+else
+    set(hObject,'String','Time');
+end
+myplot(handles);
