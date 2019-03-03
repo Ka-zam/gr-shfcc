@@ -1,0 +1,7 @@
+QPSK
+fc = 7500
+beta = 0.2
+sps = 8
+P_pt = -10
+f_pt = 16000
+
