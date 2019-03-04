@@ -12,4 +12,3 @@ alsacap.1: alsacap.pod
 install: alsacap alsacap.1
 	install -D -m 755 alsacap $(PREFIX)/bin/alsacap
 	install -D -m 644 alsacap.1 $(PREFIX)/share/man/man1/alsacap.1
-
