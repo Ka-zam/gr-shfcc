@@ -113,7 +113,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>-10</value>
+      <value>-120</value>
     </param>
   </block>
   <block>
@@ -275,7 +275,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>7500</value>
+      <value>5500</value>
     </param>
   </block>
   <block>
@@ -680,7 +680,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>8</value>
+      <value>12</value>
     </param>
   </block>
   <block>
