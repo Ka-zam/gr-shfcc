@@ -25,7 +25,14 @@ for ii=1:length(x)-1
     pha_inst = pha_inst + pha_adv;
 end
 out( length(x) ) = cos( pha_inst );
+%period_est = avg2(period_est);
+
 
 function alpha = zerocross( idx , xn , xnp1 )
 alpha = idx - xn/(xnp1-xn);
+
+function out = avg2(x)
+out = movsum(x,2);
+out = .5*out(2:2:end);
+
     
