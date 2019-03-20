@@ -132,7 +132,7 @@ input.phi = get(handles.sl_cpo,'Value');
 %Printing
 cstr = cell(4,1);
 cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3,'%5.2f') ' kbaud' ];
-cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3,'%5.2f') ' kbps' ];
+cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3*.9,'%5.2f') ' kbps' ];
 cstr{3} = ['OBW         : ' ...
     num2str((1.0+get(handles.sl_beta,'Value'))*input.fs/input.sps/1e3,'%5.2f') ' kHz' ];
 cstr{4} = ['BER         : ' ];
