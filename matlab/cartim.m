@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 20-Mar-2019 13:49:32
+% Last Modified by GUIDE v2.5 20-Mar-2019 16:12:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,8 +93,8 @@ function myplot(handles)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input
 input.fs = 96e3;
-input.fup = 10e3;
-input.fdw = 10e3*(1 + .01*get(handles.sl_cfo,'Value'));
+input.fup = str2double( get(handles.ed_fup,'String') );
+input.fdw = input.fup*(1 + .01*get(handles.sl_cfo,'Value'));
 
 
 order = handles.order;
@@ -107,7 +107,10 @@ if handles.orderhaschanged
         input.bb = pskmod( symbols , order , 0 , 'gray' );
     else
         input.bb = qammod( symbols , order , 'UnitAveragePower', true );
+        %input.bb = qammod( symbols , order , 'gray' );
     end
+    %Insert pilot symbols
+    input.bb(1:10:end) = sqrt(2) + 1j*0;
     handles.bb = input.bb;
     handles.orderhaschanged = false;
 else
@@ -128,35 +131,41 @@ input.phi = get(handles.sl_cpo,'Value');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Printing
 cstr = cell(4,1);
-cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3) ' kbaud' ];
-cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3) ' kbps' ];
+cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3,'%5.2f') ' kbaud' ];
+cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3,'%5.2f') ' kbps' ];
 cstr{3} = ['OBW         : ' ...
     num2str((1.0+get(handles.sl_beta,'Value'))*input.fs/input.sps/1e3,'%5.2f') ' kHz' ];
 cstr{4} = ['BER         : ' ];
 cstr{5} = ['EVM         : ' ];
+cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
 set(handles.txt_data,'String',cstr);
+set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 [bb,rf] = tapebb( input );
 
 i = [1:length(bb)]';
-idx = [input.rrcspan*input.sps+1:input.sps:length(bb)]';
+idx = [input.rrcspan*input.sps+1:input.sps:...
+    input.rrcspan*input.sps+input.sps*Nsym]';
 
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
-xlim(handles.axes1, [idx(1)-2*input.sps idx(end)+2*input.sps])
+xmin = max([idx(1)-2*input.sps 1]);
+%xmax = min([idx(end)+2*input.sps idx(end) ]);
+xmax = i(end);
+xlim(handles.axes1, [xmin xmax ])
 ylim(handles.axes1, [-1.5 1.5])
 grid(handles.axes1, 'on')
 
 plot(handles.axes2, bb(idx) , '*' );
-xlim(handles.axes2, [-1.5 1.5])
+xlim(handles.axes2, [-1.75 1.75])
 ylim(handles.axes2, [-1.5 1.5])
 grid(handles.axes2, 'on')
 
 if strcmp( get(handles.bt_time_freq,'String') , 'Time' )
     plot(handles.axes3, rf );
     xlim(handles.axes3, [0 length(rf)])
-    ylim(handles.axes3, [-1.2 1.2])
+    ylim(handles.axes3, [-.8 .8])
     grid(handles.axes3, 'on')
 else
     %[pxx,w]= pwelch(bb(idx(1):idx(end)),[],[],[],96,'centered');
@@ -440,13 +449,14 @@ sym = round(sym);
 if sym < 6
     sym = 6;
     set(hObject,'String','6');
-elseif sym > 1000
-    sym = 1000;
-    set(hObject,'String','1000');
+elseif sym > 4096
+    sym = 4096;
+    set(hObject,'String','4096');
 elseif isnan(sym)
     sym = 8;
     set(hObject,'String','8');
 end
+handles.orderhaschanged = true;
 guidata(hObject, handles);
 myplot(handles);
 
@@ -481,7 +491,6 @@ elseif sps > 100
     sps = 100;
     set(hObject,'String','100');    
 end
-handles.Nsps = sps;
 guidata(hObject, handles);
 myplot(handles);
 
@@ -506,3 +515,36 @@ function rb_pilot_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of rb_pilot
+
+
+
+function ed_fup_Callback(hObject, eventdata, handles)
+% hObject    handle to ed_fup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ed_fup as text
+%        str2double(get(hObject,'String')) returns contents of ed_fup as a double
+fup = str2num(get(hObject,'String'));
+fup = round(fup);
+if fup < 0
+    fup = 0;
+    set(hObject,'String','0');
+elseif fup > 48000
+    fup = 48000;
+    set(hObject,'String','48000');
+end
+myplot(handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function ed_fup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ed_fup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

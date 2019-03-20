@@ -32,6 +32,9 @@ end
 % Upsample
 bb = upsample( input.bb , input.sps );
 
+% Pad with zeroes to get filter output
+bb = [bb; zeros((input.sps+1)*input.rrcspan,1) ];
+
 % Pulse shaping
 Brrc = rcosdesign( input.beta , input.rrcspan , input.sps , 'sqrt');
 bb = filter( Brrc , 1 , bb );
