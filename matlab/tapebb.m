@@ -62,5 +62,5 @@ bb = filter( Brrc , 1 , bb );
 
 if input.tau > 0.0
     bb = interp1( bb , [input.tau : 1 : length(bb) ] );
-    bb = bb(2:end);
+    bb = bb(2:end)';
 end

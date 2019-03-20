@@ -151,10 +151,11 @@ idx = [input.rrcspan*input.sps+1:input.sps:...
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
 xmin = max([idx(1)-2*input.sps 1]);
-%xmax = min([idx(end)+2*input.sps idx(end) ]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
-ylim(handles.axes1, [-1.5 1.5])
+ymin = -max( [real(bb) ;imag(bb) ] )*1.1;
+ymax = -ymin;
+ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 
 plot(handles.axes2, bb(idx) , '*' );
@@ -288,7 +289,7 @@ function sl_cpn_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ' deg' ];
+str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
 set(handles.txt_cpn,'String',str);
 myplot(handles);
 
