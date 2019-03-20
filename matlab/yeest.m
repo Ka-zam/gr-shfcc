@@ -5,7 +5,7 @@ function out = yeest(x, Q)
 % SNR = abs(A)^2/(2*sigma^2)
 
 if nargin < 2
-    Q = 3;
+    Q = 2;
 end
 
 x = x(:);
@@ -38,5 +38,16 @@ for i=1:Q
     A = 1/N*( sum( x.*exp( -1j*2*pi/N*(m+delta)*n_all ) ) -...
         conj(A)*(1-exp(-1j*4*pi*delta))/(1-exp(-1j*4*pi/N*(m+delta))) );
 end
+%Now that we have sine paramters we can calculate SNR
+% Note - this assumes no higher spectral components
+% SNR = P_sig/(P_tot - P_sig)
 
-out = [ (m+delta)/N 2*abs(A) angle(A) ];
+P_tot = var(x);
+P_sig = 2*A*conj(A);
+if P_tot > P_sig
+    snr   = P_sig/(P_tot-P_sig);
+else
+    snr = NaN;
+end
+
+out = [ 2*abs(A) (m+delta)/N angle(A) 10*log10(snr) ];

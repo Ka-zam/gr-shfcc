@@ -34,7 +34,7 @@ bb = upsample( bb , Nsps );
 bb = [ bb; zeros(4*delay,1) ];
 bb = filter( B , 1 , bb );
 %Add some noise
-nse_pwr = 10^(-snr*.05);
+nse_pwr = 10^(-snr*.1);
 nse = nse_pwr/sqrt(2)*( randn( size(bb) ) + 1j*randn( size(bb) ) );
 if snr < 95
     bb = bb + nse;

@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 27-Feb-2019 15:32:07
+% Last Modified by GUIDE v2.5 20-Mar-2019 13:49:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,14 +54,12 @@ function cartim_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for cartim
 handles.output = hObject;
-handles.arity = 4;
-handles.Nsym = 200;
-handles.Nsps = 8;
-handles.symbols = randi( handles.arity , handles.Nsym , 1) - 1;
-%Just make sure to start a I=-1 Q=1
-handles.symbols(1:5) = 0;
-
 % Update handles structure
+handles.order = 2;
+handles.orderhaschanged = false;
+N = str2double( get(handles.ed_nsym,'String') );
+symbols = randi( handles.order , N , 1) - 1;
+handles.bb = qammod( symbols , 2 , 'UnitAveragePower', true );
 guidata(hObject, handles);
 
 % UIWAIT makes cartim wait for user response (see UIRESUME)
@@ -78,41 +76,75 @@ function varargout = cartim_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+function s = rrcspan( beta )
+if beta < 0.2
+    s = 30;
+elseif beta < 0.65
+    s = -floor( beta*44 ) + 33;
+    if mod(s,2) == 1
+        s = s + 1;
+    end
+else
+    s =  4;   
+end
+
 function myplot(handles)
-% snr = get(handles.sl_snr,'Value');
-% beta = get(handles.sl_beta,'Value');
-% m = handles.arity;
-% syms = handles.symbols;
-% nsym = handles.Nsym;
-% nsps = handles.Nsps;
-fs=96;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Input
+input.fs = 96e3;
+input.fup = 10e3;
+input.fdw = 10e3*(1 + .01*get(handles.sl_cfo,'Value'));
+
+
+order = handles.order;
+Nsym = str2double( get(handles.ed_nsym,'String') );
+
+symbols = randi( order , Nsym , 1) - 1;
+
+if handles.orderhaschanged
+    if order == 8
+        input.bb = pskmod( symbols , order , 0 , 'gray' );
+    else
+        input.bb = qammod( symbols , order , 'UnitAveragePower', true );
+    end
+    handles.bb = input.bb;
+    handles.orderhaschanged = false;
+else
+    input.bb = handles.bb;
+end
+
+input.snr = get(handles.sl_snr,'Value');
+input.sps = str2double( get(handles.ed_nsps,'String') );
+
+input.var0 = get(handles.sl_cpn,'Value')*0.015; %DRM800-A == 1.0
+input.var3 = get(handles.sl_cpn,'Value')*0.0045;
+input.beta = get(handles.sl_beta,'Value');
+input.rrcspan = rrcspan( input.beta );
+input.tau = get(handles.sl_tau,'Value');
+input.phi = get(handles.sl_cpo,'Value');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Printing
 cstr = cell(4,1);
-cstr{1} = ['Symbol rate : ' num2str(fs/handles.Nsps) ' kbaud' ];
-cstr{2} = ['Bitrate     : ' num2str(fs/handles.Nsps*log2(handles.arity)) ' kbps' ];
+cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3) ' kbaud' ];
+cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3) ' kbps' ];
 cstr{3} = ['OBW         : ' ...
-    num2str((1.0+get(handles.sl_beta,'Value'))*fs/handles.Nsps,'%5.2f') ' kHz' ];
+    num2str((1.0+get(handles.sl_beta,'Value'))*input.fs/input.sps/1e3,'%5.2f') ' kHz' ];
 cstr{4} = ['BER         : ' ];
 cstr{5} = ['EVM         : ' ];
 set(handles.txt_data,'String',cstr);
-[bb,idx,rf] = bb_sample(...
-    handles.Nsps,...
-    handles.Nsym,...
-    handles.symbols,...
-    get(handles.sl_snr,'Value'),...
-    handles.arity,...
-    get(handles.sl_beta,'Value'),...
-    get(handles.sl_cfo,'Value'),...
-    get(handles.sl_cpo,'Value'),...
-    get(handles.sl_cpn,'Value'),...
-    get(handles.sl_tau,'Value'),...
-    get(handles.sl_pt_pwr,'Value'),...
-    get(handles.sl_pt_freq,'Value')...
-    );
-%[bb,idx] = bb_sample(nsps,nsym,syms,snr,m,beta,0,0,0,0);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+[bb,rf] = tapebb( input );
+
 i = [1:length(bb)]';
+idx = [input.rrcspan*input.sps+1:input.sps:length(bb)]';
+
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
-xlim(handles.axes1, [idx(1)-2*handles.Nsps idx(end)+2*handles.Nsps])
+xlim(handles.axes1, [idx(1)-2*input.sps idx(end)+2*input.sps])
 ylim(handles.axes1, [-1.5 1.5])
 grid(handles.axes1, 'on')
 
@@ -133,6 +165,8 @@ else
     xlim(handles.axes3, [-48 48])
     grid(handles.axes3, 'on')
 end
+guidata(gcbo, handles);
+
 
 
 
@@ -195,7 +229,7 @@ function sl_cfo_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Carrier freq: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
+str = ['Carrier Deviation: ' num2str( get(hObject,'Value') , '%4.2f' ) ' %' ];
 set(handles.txt_cfo,'String',str);
 myplot(handles);
 
@@ -270,7 +304,7 @@ function sl_tau_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Timing Error: ' num2str( get(hObject,'Value') , '%4.1f' ) ];
+str = ['Timing Error: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
 set(handles.txt_tau,'String',str);
 myplot(handles);
 
@@ -360,21 +394,21 @@ function lb_modulation_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns lb_modulation contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from lb_modulation
 if get(hObject,'Value') == 1
-    handles.arity = 2;
+    handles.order = 2;
 elseif get(hObject,'Value') == 2
-    handles.arity = 4;
+    handles.order = 4;
 elseif get(hObject,'Value') == 3
-    handles.arity = 8;
+    handles.order = 8;
 elseif get(hObject,'Value') == 4
-    handles.arity = 16;
+    handles.order = 16;
 elseif get(hObject,'Value') == 5
-    handles.arity = 64;
+    handles.order = 64;
 elseif get(hObject,'Value') == 6
-    handles.arity = 256;
+    handles.order = 256;
 elseif get(hObject,'Value') == 7
-    handles.arity = 1024;
+    handles.order = 1024;
 end
-handles.symbols = randi( handles.arity , handles.Nsym , 1) - 1;
+handles.orderhaschanged = true;
 guidata(hObject, handles);
 myplot(handles);
 
@@ -409,9 +443,10 @@ if sym < 6
 elseif sym > 1000
     sym = 1000;
     set(hObject,'String','1000');
+elseif isnan(sym)
+    sym = 8;
+    set(hObject,'String','8');
 end
-handles.Nsym = sym;
-handles.symbols = randi( handles.arity , handles.Nsym , 1) - 1;
 guidata(hObject, handles);
 myplot(handles);
 
@@ -462,3 +497,12 @@ function ed_nsps_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in rb_pilot.
+function rb_pilot_Callback(hObject, eventdata, handles)
+% hObject    handle to rb_pilot (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of rb_pilot
