@@ -1,0 +1,6 @@
+16QAM
+fc = 5000
+beta = 0.2 
+len(Brrc) = 161
+sps = 16
+Pilot Symbols ( 1.41 ; 0.00 ) every 10th symbol

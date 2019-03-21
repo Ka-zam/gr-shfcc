@@ -1,4 +1,4 @@
-QPSK
+16QAM
 fc = 5500
 beta = 0.2
 sps = 12

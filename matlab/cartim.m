@@ -180,12 +180,18 @@ xmin = max([idx(1)-2*input.sps 1]);
 %xmax = min([idx(end)+2*input.sps idx(end) ]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
-ylim(handles.axes1, [-1.5 1.5])
+ymin = -max(abs(real(bb)))*1.1;
+ymax= -ymin;
+ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 
 plot(handles.axes2, bb(idx) , '*' );
-xlim(handles.axes2, [-1.75 1.75])
-ylim(handles.axes2, [-1.5 1.5])
+xmin = -max(real(bb(idx)))*1.1;
+xmax = -xmin;
+ymin = -max(imag(bb(idx)))*1.1;
+ymax = -ymin;
+xlim(handles.axes2, [xmin xmax])
+ylim(handles.axes2, [ymin ymax])
 grid(handles.axes2, 'on')
 
 if strcmp( get(handles.bt_time_freq,'String') , 'Time' )
