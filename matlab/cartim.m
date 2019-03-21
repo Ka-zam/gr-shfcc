@@ -132,7 +132,7 @@ input.phi = get(handles.sl_cpo,'Value');
 %Printing
 cstr = cell(4,1);
 cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3,'%5.2f') ' kbaud' ];
-cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3*.9,'%5.2f') ' kbps' ];
+cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3,'%5.2f') ' kbps' ];
 cstr{3} = ['OBW         : ' ...
     num2str((1.0+get(handles.sl_beta,'Value'))*input.fs/input.sps/1e3,'%5.2f') ' kHz' ];
 cstr{4} = ['BER         : ' ];
@@ -151,11 +151,10 @@ idx = [input.rrcspan*input.sps+1:input.sps:...
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
 xmin = max([idx(1)-2*input.sps 1]);
+%xmax = min([idx(end)+2*input.sps idx(end) ]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
-ymin = -max( [real(bb) ;imag(bb) ] )*1.1;
-ymax = -ymin;
-ylim(handles.axes1, [ymin ymax])
+ylim(handles.axes1, [-1.5 1.5])
 grid(handles.axes1, 'on')
 
 plot(handles.axes2, bb(idx) , '*' );
@@ -289,7 +288,7 @@ function sl_cpn_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
+str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ' deg' ];
 set(handles.txt_cpn,'String',str);
 myplot(handles);
 
@@ -485,6 +484,7 @@ function ed_nsps_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ed_nsps as a double
 sps = str2num(get(hObject,'String'));
 sps = round(sps);
+
 if sps < 2
     sps = 2;
     set(hObject,'String','2');
@@ -492,6 +492,14 @@ elseif sps > 100
     sps = 100;
     set(hObject,'String','100');    
 end
+
+if get(handles.sl_tau,'Value') > sps*.5
+    set(handles.sl_tau,'Value' , sps*.5);
+    str = ['Timing Error: ' num2str( sps*.5 , '%4.2f' ) ];
+    set(handles.txt_tau,'String' , str );
+end
+set(handles.sl_tau,'Max',sps*.5);
+
 guidata(hObject, handles);
 myplot(handles);
 
