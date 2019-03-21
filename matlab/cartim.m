@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 20-Mar-2019 16:12:55
+% Last Modified by GUIDE v2.5 21-Mar-2019 18:27:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -141,8 +141,34 @@ cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
 set(handles.txt_data,'String',cstr);
 set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Data Selection
+if isfield(handles,'meabb') && get(handles.rb_measured,'Value')
+    rf = handles.meabb(:);
+    rf_tmp = rf; %Save for later
+    t = linspace(0,(length(rf)-1)/input.fs,length(rf))';
+    rf = hilbert( rf );
+    carrier = exp(-1j*(2*pi*input.fdw*t + input.phi/180*pi));
+    bb = rf.*carrier;
+    rf = rf_tmp;
+    Nsym = floor(length(bb)/input.sps)-40;
     
-[bb,rf] = tapebb( input );
+    %Filter
+    Brrc = rcosdesign( input.beta , input.rrcspan , input.sps , 'sqrt');
+    bb = filter( Brrc , 1 , bb );
+
+    if input.tau > 0.0
+        bb = interp1( bb , [input.tau : 1 : length(bb) ] );
+        bb = [bb(2:end)'; 0];
+    end
+else
+    [bb,rf] = tapebb( input );
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting
 
 i = [1:length(bb)]';
 idx = [input.rrcspan*input.sps+1:input.sps:...
@@ -174,6 +200,8 @@ else
     xlim(handles.axes3, [-48 48])
     grid(handles.axes3, 'on')
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 guidata(gcbo, handles);
 
 
@@ -493,12 +521,12 @@ elseif sps > 100
     set(hObject,'String','100');    
 end
 
-if get(handles.sl_tau,'Value') > sps*.5
-    set(handles.sl_tau,'Value' , sps*.5);
-    str = ['Timing Error: ' num2str( sps*.5 , '%4.2f' ) ];
+if get(handles.sl_tau,'Value') > sps
+    set(handles.sl_tau,'Value' , sps);
+    str = ['Timing Error: ' num2str( sps , '%4.2f' ) ];
     set(handles.txt_tau,'String' , str );
 end
-set(handles.sl_tau,'Max',sps*.5);
+set(handles.sl_tau,'Max',sps);
 
 guidata(hObject, handles);
 myplot(handles);
@@ -557,3 +585,38 @@ function ed_fup_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+function ed_var_Callback(hObject, eventdata, handles)
+% hObject    handle to ed_var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ed_var as text
+%        str2double(get(hObject,'String')) returns contents of ed_var as a double
+str = get(hObject,'String');
+handles.meabb = evalin('base',str);
+guidata(hObject,handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function ed_var_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ed_var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in rb_measured.
+function rb_measured_Callback(hObject, eventdata, handles)
+% hObject    handle to rb_measured (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of rb_measured
