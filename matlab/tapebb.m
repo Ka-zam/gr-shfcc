@@ -40,7 +40,11 @@ Brrc = rcosdesign( input.beta , input.rrcspan , input.sps , 'sqrt');
 bb = filter( Brrc , 1 , bb );
 
 % Upconvert
-carrier = cexppn( input.fup , input.fs , input.var0 , input.var3 , length(bb) );
+if (input.var0 > 0.0) || (input.var3 > 0.0)
+    carrier = cexppn( input.fup , input.fs , input.var0 , input.var3 , length(bb) );
+else
+    carrier = cexp( input.fup , input.fs , length(bb) );
+end
 rf = real(bb.*carrier);
 
 % Add noise

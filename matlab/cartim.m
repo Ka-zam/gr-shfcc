@@ -186,12 +186,12 @@ ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 
 plot(handles.axes2, bb(idx) , '*' );
-xmin = -max(real(bb(idx)))*1.1;
-xmax = -xmin;
-ymin = -max(imag(bb(idx)))*1.1;
-ymax = -ymin;
-xlim(handles.axes2, [xmin xmax])
-ylim(handles.axes2, [ymin ymax])
+rmax = max(abs(real(bb(idx))));
+imax = max(abs(imag(bb(idx))));
+rmax = max([rmax imax])*1.1;
+
+xlim(handles.axes2, [-rmax rmax])
+ylim(handles.axes2, [-rmax rmax])
 grid(handles.axes2, 'on')
 
 if strcmp( get(handles.bt_time_freq,'String') , 'Time' )
@@ -322,7 +322,7 @@ function sl_cpn_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ' deg' ];
+str = ['Carrier PN: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
 set(handles.txt_cpn,'String',str);
 myplot(handles);
 
