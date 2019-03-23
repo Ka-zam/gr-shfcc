@@ -105,14 +105,23 @@ symbols = randi( order , Nsym , 1) - 1;
 if handles.orderhaschanged
     if order == 8
         input.bb = pskmod( symbols , order , 0 , 'gray' );
+        mag = 1.0;
     else
         input.bb = qammod( symbols , order , 'UnitAveragePower', true );
-        %input.bb = qammod( symbols , order , 'gray' );
+        % Zero:th symbol always in lower left corner
+        mag = abs( qammod(0, order , 'UnitAveragePower', true ) );        
     end
     %Insert pilot symbols
-    input.bb(1:10:end) = sqrt(2) + 1j*0;
+    if get(handles.rb_pilot,'Value') > 0
+        if order ~= 8
+            input.bb(1:10:end) = mag + 1j*0;
+        else
+            % "A New Design of Pilot Symbol in 16QAM Channels" 
+            input.bb(1:10:end) = 1.2*mag*exp(1j*0*pi/180);
+        end
+    end
     handles.bb = input.bb;
-    handles.orderhaschanged = false;
+    handles.orderhaschanged = false;    
 else
     input.bb = handles.bb;
 end
@@ -571,6 +580,10 @@ else
     set( handles.sl_pt_pwr , 'Enable' , 'on' );
     set( handles.sl_pt_freq , 'Enable' , 'on' );
 end
+handles.orderhaschanged = true;
+guidata(hObject, handles);
+myplot(handles);
+
 
 
 function ed_fup_Callback(hObject, eventdata, handles)
