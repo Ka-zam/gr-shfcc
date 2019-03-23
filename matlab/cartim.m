@@ -194,8 +194,12 @@ ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 
 % Axes2
-%if strcmp( get(handles.tb_const,'String') , 'Const' )
-if true
+if strcmp( get(handles.tb_const,'String') , 'Const' )
+%if true
+    yyaxis(handles.axes2, 'right');
+    cla(handles.axes2);
+    yyaxis(handles.axes2, 'left');
+    cla(handles.axes2);
     plot(handles.axes2, bb(idx) , '*' );
     rmax = max(abs(real(bb(idx))));
     imax = max(abs(imag(bb(idx))));
@@ -206,7 +210,14 @@ if true
     grid(handles.axes2, 'on')
 else
     %eyediagram( handles.axes2 , bb , input.sps );
-
+    cla(handles.axes2);
+    yyaxis(handles.axes2, 'left');
+    plot(handles.axes2, abs(bb(idx)) , 'b-*' );
+    xlim(handles.axes2, [1 length(idx)])
+    yyaxis(handles.axes2, 'right');
+    plot(handles.axes2, 180/pi*unwrap(angle(bb(idx))) , 'r-*' );
+    xlim(handles.axes2, [1 length(idx)])
+    grid(handles.axes2, 'on')
 end
 
 % Axes3
