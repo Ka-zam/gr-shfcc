@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 21-Mar-2019 18:27:11
+% Last Modified by GUIDE v2.5 23-Mar-2019 01:41:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -159,8 +159,7 @@ if isfield(handles,'meabb') && get(handles.rb_measured,'Value')
     bb = filter( Brrc , 1 , bb );
 
     if input.tau > 0.0
-        bb = interp1( bb , [input.tau : 1 : length(bb) ] );
-        bb = [bb(2:end)'; 0];
+        bb = interp1( bb , [1+input.tau : 1 : length(bb) ] );
     end
 else
     [bb,rf] = tapebb( input );
@@ -170,6 +169,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting
 
+% Axes1
 i = [1:length(bb)]';
 idx = [input.rrcspan*input.sps+1:input.sps:...
     input.rrcspan*input.sps+input.sps*Nsym]';
@@ -177,7 +177,6 @@ idx = [input.rrcspan*input.sps+1:input.sps:...
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
 xmin = max([idx(1)-2*input.sps 1]);
-%xmax = min([idx(end)+2*input.sps idx(end) ]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
 ymin = -max(abs(real(bb)))*1.1;
@@ -185,22 +184,29 @@ ymax= -ymin;
 ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 
-plot(handles.axes2, bb(idx) , '*' );
-rmax = max(abs(real(bb(idx))));
-imax = max(abs(imag(bb(idx))));
-rmax = max([rmax imax])*1.1;
+% Axes2
+%if strcmp( get(handles.tb_const,'String') , 'Const' )
+if true
+    plot(handles.axes2, bb(idx) , '*' );
+    rmax = max(abs(real(bb(idx))));
+    imax = max(abs(imag(bb(idx))));
+    rmax = max([rmax imax])*1.1;
+    
+    xlim(handles.axes2, [-rmax rmax])
+    ylim(handles.axes2, [-rmax rmax])
+    grid(handles.axes2, 'on')
+else
+    %eyediagram( handles.axes2 , bb , input.sps );
 
-xlim(handles.axes2, [-rmax rmax])
-ylim(handles.axes2, [-rmax rmax])
-grid(handles.axes2, 'on')
+end
 
-if strcmp( get(handles.bt_time_freq,'String') , 'Time' )
+% Axes3
+if strcmp( get(handles.tb_time_freq,'String') , 'Time' )
     plot(handles.axes3, rf );
     xlim(handles.axes3, [0 length(rf)])
     ylim(handles.axes3, [-.8 .8])
     grid(handles.axes3, 'on')
 else
-    %[pxx,w]= pwelch(bb(idx(1):idx(end)),[],[],[],96,'centered');
     [pxx,w]= pwelch(rf(idx(1):idx(end)),[],[],[],96,'centered');
     plot(handles.axes3, w, 10*log10(pxx) );
     xlim(handles.axes3, [-48 48])
@@ -388,13 +394,13 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 
 
-% --- Executes on button press in bt_time_freq.
-function bt_time_freq_Callback(hObject, eventdata, handles)
-% hObject    handle to bt_time_freq (see GCBO)
+% --- Executes on button press in tb_time_freq.
+function tb_time_freq_Callback(hObject, eventdata, handles)
+% hObject    handle to tb_time_freq (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of bt_time_freq
+% Hint: get(hObject,'Value') returns toggle state of tb_time_freq
 if get(hObject,'Value') == 1
     %Enabled for freq domain
     set(hObject,'String','Freq');
@@ -558,7 +564,13 @@ function rb_pilot_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of rb_pilot
-
+if get(hObject,'Value') < 1
+    set( handles.sl_pt_pwr , 'Enable' , 'off' );
+    set( handles.sl_pt_freq , 'Enable' , 'off' );
+else
+    set( handles.sl_pt_pwr , 'Enable' , 'on' );
+    set( handles.sl_pt_freq , 'Enable' , 'on' );
+end
 
 
 function ed_fup_Callback(hObject, eventdata, handles)
@@ -626,3 +638,19 @@ function rb_measured_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of rb_measured
+
+
+% --- Executes on button press in tb_const.
+function tb_const_Callback(hObject, eventdata, handles)
+% hObject    handle to tb_const (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of tb_const
+if get(hObject,'Value') == 0
+    %Enabled for freq domain
+    set(hObject,'String','Const');
+else
+    set(hObject,'String','Eye');
+end
+myplot(handles);

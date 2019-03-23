@@ -49,7 +49,7 @@ rf = real(bb.*carrier);
 
 % Add noise
 %noise = cnoise( 10^( -input.snr*.1 ) , length(rf) );
-noise = 10^( -input.snr*.1 )*randn(  length(rf) , 1 );
+noise = .5*10^( -input.snr*.1 )*randn(  length(rf) , 1 );
 rf = rf + noise;
 
 %Save for output
@@ -65,7 +65,5 @@ bb = rf.*carrier;
 bb = filter( Brrc , 1 , bb );
 
 if input.tau > 0.0
-    %bb = [0 ;bb];
-    bb = interp1( bb , [input.tau : 1 : length(bb) ] );
-    bb = [bb(2:end)'; 0];
+    bb = interp1( bb , [1+input.tau : 1 : length(bb) ] );
 end
