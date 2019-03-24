@@ -37,7 +37,8 @@ bb = [bb; zeros((input.sps+1)*input.rrcspan,1) ];
 
 % Pulse shaping
 Brrc = rcosdesign( input.beta , input.rrcspan , input.sps , 'sqrt');
-bb = filter( Brrc , 1 , bb );
+%bb = filter( Brrc , 1 , bb );
+bb = fftfilt( Brrc , bb );
 
 % Upconvert
 if (input.var0 > 0.0) || (input.var3 > 0.0)
@@ -62,7 +63,8 @@ carrier = exp(-1j*(2*pi*input.fdw*t + input.phi/180*pi));
 bb = rf.*carrier;
 
 %Filter
-bb = filter( Brrc , 1 , bb );
+%bb = filter( Brrc , 1 , bb );
+bb = fftfilt( Brrc , bb );
 
 if input.tau > 0.0
     bb = interp1( bb , [1+input.tau : 1 : length(bb) ] );

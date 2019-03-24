@@ -101,10 +101,11 @@ order = handles.order;
 Nsym = str2double( get(handles.ed_nsym,'String') );
 
 symbols = randi( order , Nsym , 1) - 1;
+%symbols = mod([0:Nsym]', order );
 
 if handles.orderhaschanged
     if order == 8
-        input.bb = pskmod( symbols , order , 0 , 'gray' );
+        input.bb = exp(1j*22.5*pi/180)*pskmod( symbols , order , 0 , 'gray' );
         mag = 1.0;
     else
         input.bb = qammod( symbols , order , 'UnitAveragePower', true );
@@ -113,11 +114,14 @@ if handles.orderhaschanged
     end
     %Insert pilot symbols
     if get(handles.rb_pilot,'Value') > 0
-        if order ~= 8
-            input.bb(1:10:end) = mag + 1j*0;
+        if order == 8
+            input.bb(1:10:end) = mag*exp(1j*0*pi/180);
         else
             % "A New Design of Pilot Symbol in 16QAM Channels" 
-            input.bb(1:10:end) = 1.2*mag*exp(1j*0*pi/180);
+            %input.bb(1:10:end) = 1.2*mag*exp(1j*0*pi/180);
+            input.bb(1:30:end) = mag*exp(1j*-90*pi/180);
+            input.bb(2:30:end) = mag*exp(1j*0*pi/180);
+            input.bb(3:30:end) = mag*exp(1j*90*pi/180);
         end
     end
     handles.bb = input.bb;
