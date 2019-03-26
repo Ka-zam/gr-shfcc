@@ -9,14 +9,14 @@ namespace gr {
   namespace shfcc {
 
     phase_noise_mixer_cc::sptr
-    phase_noise_mixer_cc::make(float fc, float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
+    phase_noise_mixer_cc::make(double fc, double fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
     {
       return gnuradio::get_initial_sptr
         (new phase_noise_mixer_cc_impl(fc, fs, k0, k2, cfo_ampl, cfo_freq, impair));
     }
 
-    phase_noise_mixer_cc_impl::phase_noise_mixer_cc_impl(float fc, 
-      float fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
+    phase_noise_mixer_cc_impl::phase_noise_mixer_cc_impl(double fc, 
+      double fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
       : gr::sync_block("phase_noise_mixer_cc",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -46,7 +46,7 @@ namespace gr {
     }
 
     void
-    phase_noise_mixer_cc_impl::set_fc_nominal(float fc_nom)
+    phase_noise_mixer_cc_impl::set_fc_nominal(double fc_nom)
     {
       d_fc_nominal = fc_nom;
       //d_pha_inc = exp( gr_complex(0 , fc_nom*2.0*M_PI/d_fs) );
@@ -54,10 +54,11 @@ namespace gr {
     }
 
     void
-    phase_noise_mixer_cc_impl::set_fc(float fc)
+    phase_noise_mixer_cc_impl::set_fc(double fc)
     {
       d_fc = fc;
-      d_pha_inc = exp( gr_complex(0 , fc*2.0*M_PI/d_fs) );
+      d_pha_inc = exp( gr_complex(0.0 , 2.0*M_PI*(fc/d_fs) ) );
+      d_pha_inc /= std::abs( d_pha_inc );
     }
 
     void
@@ -132,12 +133,12 @@ namespace gr {
           k2_pha += d_k2*d_k2_rng.gasdev();
           if (d_cfo_ampl > 1.e-6){
             d_cfo_pha += d_cfo_pha_inc;
-            if (d_cfo_pha > 2*M_PI) {d_cfo_pha -= 2*M_PI;}
+            if (d_cfo_pha > 2.0*M_PI) {d_cfo_pha -= 2.0*M_PI;}
             set_fc( d_fc_nominal + d_cfo_ampl*cos(d_cfo_pha) );
           }
         }
         out[noutput_items-1] = 
-            rotate(in[noutput_items-1]) * exp( gr_complex(0 , k0_pha + k2_pha) );
+            rotate(in[noutput_items-1]) * exp( gr_complex(0.0 , k0_pha + k2_pha) );
         d_k2_last_value = k2_pha;                
       }
       else{

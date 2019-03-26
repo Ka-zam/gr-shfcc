@@ -2124,7 +2124,7 @@
     </param>
     <param>
       <key>const</key>
-      <value>10.*np.exp(1j*pha_est*np.pi/180.0)</value>
+      <value>10.0*np.exp(1j*pha_est*np.pi/180.0)</value>
     </param>
     <param>
       <key>affinity</key>
@@ -2379,7 +2379,7 @@
     </param>
     <param>
       <key>phase_inc</key>
-      <value>-2*math.pi*(f_IF)/samp_rate</value>
+      <value>-2.0*math.pi*(f_IF)/samp_rate</value>
     </param>
   </block>
   <block>
