@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 23-Mar-2019 01:41:55
+% Last Modified by GUIDE v2.5 24-Mar-2019 17:07:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -187,6 +187,10 @@ i = [1:length(bb)]';
 idx = [input.rrcspan*input.sps+1:input.sps:...
     input.rrcspan*input.sps+input.sps*Nsym]';
 
+lim1 = get(handles.axes1,{'xlim','ylim'});  % Get axes limits.
+
+%plot(handles.axes1,...
+%    i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
 plot(handles.axes1,...
     i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
 xmin = max([idx(1)-2*input.sps 1]);
@@ -196,6 +200,9 @@ ymin = -max(abs(real(bb)))*1.1;
 ymax= -ymin;
 ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
+if get(handles.cb_keep_zoom,'Value') > 0.0
+    set(handles.axes1,{'xlim','ylim'},lim1);
+end
 
 % Axes2
 if strcmp( get(handles.tb_const,'String') , 'Const' )
@@ -204,14 +211,20 @@ if strcmp( get(handles.tb_const,'String') , 'Const' )
     cla(handles.axes2);
     yyaxis(handles.axes2, 'left');
     cla(handles.axes2);
+    lim2 = get(handles.axes2,{'xlim','ylim'});  % Get axes limits.
+    
     plot(handles.axes2, bb(idx) , '*' );
     rmax = max(abs(real(bb(idx))));
     imax = max(abs(imag(bb(idx))));
     rmax = max([rmax imax])*1.1;
     
+    
     xlim(handles.axes2, [-rmax rmax])
     ylim(handles.axes2, [-rmax rmax])
     grid(handles.axes2, 'on')
+    if get(handles.cb_keep_zoom,'Value') > 0.0
+        set(handles.axes2,{'xlim','ylim'},lim2);
+    end    
 else
     %eyediagram( handles.axes2 , bb , input.sps );
     cla(handles.axes2);
@@ -219,22 +232,40 @@ else
     plot(handles.axes2, abs(bb(idx)) , 'b-*' );
     xlim(handles.axes2, [1 length(idx)])
     yyaxis(handles.axes2, 'right');
+    lim2 = get(handles.axes2,{'xlim','ylim'});  % Get axes limits.    
     plot(handles.axes2, 180/pi*unwrap(angle(bb(idx))) , 'r-*' );
     xlim(handles.axes2, [1 length(idx)])
     grid(handles.axes2, 'on')
+    if get(handles.cb_keep_zoom,'Value') > 0.0
+        set(handles.axes2,{'xlim','ylim'},lim2);
+    end    
+    
 end
+
+
 
 % Axes3
 if strcmp( get(handles.tb_time_freq,'String') , 'Time' )
+    lim3 = get(handles.axes3,{'xlim','ylim'});  % Get axes limits.    
     plot(handles.axes3, rf );
     xlim(handles.axes3, [0 length(rf)])
-    ylim(handles.axes3, [-.8 .8])
+    ylim(handles.axes3, [-1.1*max(rf) 1.1*max(rf)])
     grid(handles.axes3, 'on')
-else
+    if get(handles.cb_keep_zoom,'Value') > 0.0
+        set(handles.axes3,{'xlim','ylim'},lim3);
+    end  
+elseif false
     [pxx,w]= pwelch(rf(idx(1):idx(end)),[],[],[],96,'centered');
     plot(handles.axes3, w, 10*log10(pxx) );
     xlim(handles.axes3, [-48 48])
     grid(handles.axes3, 'on')
+else
+    %Early Late
+    sps = input.sps;
+    len = length(bb(sps:end-3*sps*5))-1;
+    eld = real( conj( bb(sps:end-3*sps*5) ) .*...
+        ( bb(3*sps/2: 3*sps/2+len ) - bb(sps/2: sps/2+len) ));
+    plot(handles.axes3, eld );    
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -682,3 +713,12 @@ else
     set(hObject,'String','Eye');
 end
 myplot(handles);
+
+
+% --- Executes on button press in cb_keep_zoom.
+function cb_keep_zoom_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_keep_zoom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of cb_keep_zoom
