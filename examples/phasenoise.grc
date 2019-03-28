@@ -250,7 +250,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>10</value>
+      <value>8</value>
     </param>
   </block>
   <block>
@@ -1127,7 +1127,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1144,6 +1144,33 @@
     <param>
       <key>value</key>
       <value>spiralqam(2**bits_per_symbol,R)</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(928, 1612)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>my_con</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>digital.qam_constellation(2**bits_per_symbol).base()</value>
     </param>
   </block>
   <block>
@@ -1864,7 +1891,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(280, 796)</value>
+      <value>(224, 796)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2280,7 +2307,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 804)</value>
+      <value>(440, 892)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2319,7 +2346,7 @@
     </param>
     <param>
       <key>const</key>
-      <value>float(2**bits_per_symbol*.5)</value>
+      <value>float(sps)</value>
     </param>
     <param>
       <key>affinity</key>
@@ -2327,11 +2354,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1232, 1796)</value>
+      <value>(1240, 1796)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2433,7 +2460,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(416, 1788)</value>
+      <value>(400, 1788)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2805,7 +2832,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(620, 384)</value>
+      <value>(596, 336)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2856,7 +2883,7 @@
     </param>
     <param>
       <key>dimension</key>
-      <value>my_con.dimensionality</value>
+      <value>my_con.dimensionality()</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -2864,7 +2891,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(896, 1788)</value>
+      <value>(808, 1788)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2896,7 +2923,7 @@
     </param>
     <param>
       <key>symbol_table</key>
-      <value>my_con.points</value>
+      <value>my_con.points()</value>
     </param>
   </block>
   <block>
@@ -3112,7 +3139,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(248, 884)</value>
+      <value>(224, 884)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3558,11 +3585,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1000, 1876)</value>
+      <value>(1040, 1788)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -4244,7 +4271,7 @@
     </param>
     <param>
       <key>size</key>
-      <value>1024</value>
+      <value>4096</value>
     </param>
     <param>
       <key>tr_chan</key>
@@ -4941,7 +4968,7 @@
     <key>qtgui_time_sink_x</key>
     <param>
       <key>autoscale</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>axislabels</key>
@@ -4973,7 +5000,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1296, 748)</value>
+      <value>(1152, 748)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -5297,11 +5324,11 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>1</value>
+      <value>2</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-1</value>
+      <value>-2</value>
     </param>
   </block>
   <block>
@@ -5595,7 +5622,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(648, 1796)</value>
+      <value>(584, 1796)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -5642,7 +5669,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(208, 1800)</value>
+      <value>(192, 1800)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -6050,7 +6077,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1264, 156)</value>
+      <value>(1272, 124)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -6442,13 +6469,19 @@
   </connection>
   <connection>
     <source_block_id>blocks_multiply_conjugate_cc_0</source_block_id>
-    <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
+    <sink_block_id>blocks_rotator_cc_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_multiply_const_vxx_0</source_block_id>
-    <sink_block_id>blocks_rotator_cc_0_0_0</sink_block_id>
+    <sink_block_id>blocks_multiply_conjugate_cc_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>1</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_multiply_const_vxx_0</source_block_id>
+    <sink_block_id>qtgui_time_sink_x_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -6556,13 +6589,7 @@
   </connection>
   <connection>
     <source_block_id>fir_filter_xxx_0</source_block_id>
-    <sink_block_id>blocks_multiply_conjugate_cc_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>1</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>fir_filter_xxx_0</source_block_id>
-    <sink_block_id>qtgui_time_sink_x_0</sink_block_id>
+    <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
