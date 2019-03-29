@@ -20,5 +20,6 @@
 
 install(FILES
     shfcc_phase_noise_mixer_cc.xml
-    shfcc_pack_bs.xml DESTINATION share/gnuradio/grc/blocks
+    shfcc_pack_bs.xml
+    shfcc_map_ss.xml DESTINATION share/gnuradio/grc/blocks
 )

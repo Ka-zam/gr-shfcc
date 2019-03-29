@@ -3076,7 +3076,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(728, 1908)</value>
+      <value>(624, 1836)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -5847,49 +5847,6 @@
     </param>
   </block>
   <block>
-    <key>sapp_map_ss</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(584, 1796)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>sapp_map_ss_0_0</value>
-    </param>
-    <param>
-      <key>map</key>
-      <value>range(2**bits_per_symbol)</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
     <key>sapp_vaverage_ff</key>
     <param>
       <key>m</key>
@@ -6193,6 +6150,49 @@
     <param>
       <key>n</key>
       <value>10</value>
+    </param>
+  </block>
+  <block>
+    <key>shfcc_map_ss</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(584, 1724)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>shfcc_map_ss_0</value>
+    </param>
+    <param>
+      <key>map</key>
+      <value>range(2**bits_per_symbol)</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
     </param>
   </block>
   <block>
@@ -6743,7 +6743,7 @@
   </connection>
   <connection>
     <source_block_id>blocks_packed_to_unpacked_xx_0</source_block_id>
-    <sink_block_id>sapp_map_ss_0_0</sink_block_id>
+    <sink_block_id>shfcc_map_ss_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -6886,12 +6886,6 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>sapp_map_ss_0_0</source_block_id>
-    <sink_block_id>blocks_vector_insert_x_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
     <source_block_id>sapp_vaverage_ff_0</source_block_id>
     <sink_block_id>qtgui_vector_sink_f_0</sink_block_id>
     <source_key>0</source_key>
@@ -6924,6 +6918,12 @@
   <connection>
     <source_block_id>sapp_vlog_ff_0_1</source_block_id>
     <sink_block_id>sapp_vaverage_ff_0_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>shfcc_map_ss_0</source_block_id>
+    <sink_block_id>blocks_vector_insert_x_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

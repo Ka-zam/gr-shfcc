@@ -10,6 +10,7 @@
 %{
 #include "shfcc/phase_noise_mixer_cc.h"
 #include "shfcc/pack_bs.h"
+#include "shfcc/map_ss.h"
 %}
 
 
@@ -17,3 +18,5 @@
 GR_SWIG_BLOCK_MAGIC2(shfcc, phase_noise_mixer_cc);
 %include "shfcc/pack_bs.h"
 GR_SWIG_BLOCK_MAGIC2(shfcc, pack_bs);
+%include "shfcc/map_ss.h"
+GR_SWIG_BLOCK_MAGIC2(shfcc, map_ss);

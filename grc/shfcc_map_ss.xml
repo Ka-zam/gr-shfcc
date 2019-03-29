@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<block>
+  <name>Map</name>
+  <key>shfcc_map_ss</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.map_ss($map)</make>
+  <param>
+    <name>Map</name>
+    <key>map</key>
+    <type>int_vector</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>short</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>short</type>
+  </source>
+</block>
