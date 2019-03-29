@@ -28,6 +28,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND shfcc_sources
     phase_noise_mixer_cc_impl.cc
+    pack_bs_impl.cc
 )
 
 set(shfcc_sources "${shfcc_sources}" PARENT_SCOPE)

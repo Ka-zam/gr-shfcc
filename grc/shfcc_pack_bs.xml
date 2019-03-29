@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>Pack 2 byte in 1 short</name>
+  <key>shfcc_pack_bs</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.pack_bs($endianness)</make>
+
+  <param>
+    <name>Endianness</name>
+    <key>endianness</key>
+    <value>gr.GR_LSB_FIRST</value>
+    <type>int</type>
+    <hide>part</hide>
+    <option>
+      <name>MSB</name>
+      <key>gr.GR_MSB_FIRST</key>
+    </option>
+    <option>
+      <name>LSB</name>
+      <key>gr.GR_LSB_FIRST</key>
+    </option>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>short</type>
+  </source>
+
+</block>

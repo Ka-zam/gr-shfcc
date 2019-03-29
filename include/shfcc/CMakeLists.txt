@@ -23,5 +23,6 @@
 ########################################################################
 install(FILES
     api.h
-    phase_noise_mixer_cc.h DESTINATION include/shfcc
+    phase_noise_mixer_cc.h
+    pack_bs.h DESTINATION include/shfcc
 )

@@ -19,5 +19,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    shfcc_phase_noise_mixer_cc.xml DESTINATION share/gnuradio/grc/blocks
+    shfcc_phase_noise_mixer_cc.xml
+    shfcc_pack_bs.xml DESTINATION share/gnuradio/grc/blocks
 )
