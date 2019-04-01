@@ -1,4 +1,4 @@
-function [f,m,d] = amest(X,Alg,Q)
+function [f,m,d,ac] = amest(X,Alg,Q)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
@@ -60,6 +60,7 @@ Y = fft(X); %Obtain the DFT
 mh = m-1;  %adjust from MATLAB notation to actual index
 
 d = zeros(Q,M);
+A = zeros(Q,M);
 
 Xn = exp(-1i*2*pi*nv*(mh-0.5)/N).*X;
 Xp = exp(-1i*2*pi*nv*(mh+0.5)/N).*X;
@@ -68,16 +69,28 @@ Xp = exp(-1i*2*pi*nv*(mh+0.5)/N).*X;
     
     D = exp(-1i*2*pi*nv*sum(d)/N);
     Yn = sum(D.*Xn);
-    Yp = sum(D.*Xp); 
+    Yp = sum(D.*Xp);
+    %[abs(1j*pi/N*Yp)*.5 angle(1j*pi/N*Yp)*180/pi]
+    %[abs(-1j*pi/N*Yn)*.5 angle(-1j*pi/N*Yn)*180/pi]
 
     if Alg == 1
         d(niter,:) =  0.5*real((Yp+Yn)./(Yp-Yn));
     elseif Alg == 2
         d(niter,:) =  0.5*(abs(Yp)-abs(Yn))./(abs(Yp)+abs(Yn));
     end
+    %A(niter,:) = 1/N*sum( X.*exp( -1j*2*pi/N*(mh+d(niter,:))*nv ) );
+    %    A = 1/N*( sum( x.*exp( -1j*2*pi/N*(m+delta)*n_all ) ) -...
+    %    conj(A)*(1-exp(-1j*4*pi*delta))/(1-exp(-1j*4*pi/N*(m+delta))) );
+    
+    ac(niter,1) = 1j*2*pi/N*Yp*( d(niter,:) + .5 )./( 1 + exp(1j*2*pi*d(niter,:)) );
+    ac(niter,2) = 1j*2*pi/N*Yn*( d(niter,:) - .5 )./( 1 + exp(1j*2*pi*d(niter,:)) );
     
  end
 
 m = (mh>=N/2).*(mh-N)+(mh<N/2).*mh; %Calculate the index between -N/2 and N/2-1
 
 f = (m+sum(d))/N;
+ac = mean(ac,2);
+%A = A(Q,:);
+%2*abs(A);
+%angle(A)*180/pi;
