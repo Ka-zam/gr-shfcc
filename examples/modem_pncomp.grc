@@ -304,7 +304,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>8</value>
+      <value>2</value>
     </param>
   </block>
   <block>
@@ -1723,7 +1723,7 @@
     </param>
     <param>
       <key>device_name</key>
-      <value>stereo34</value>
+      <value>hw:USB,0</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -1731,7 +1731,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(480, 376)</value>
+      <value>(568, 328)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1743,7 +1743,7 @@
     </param>
     <param>
       <key>num_inputs</key>
-      <value>2</value>
+      <value>4</value>
     </param>
     <param>
       <key>ok_to_block</key>
@@ -1770,7 +1770,7 @@
     </param>
     <param>
       <key>device_name</key>
-      <value>hw:2</value>
+      <value>hw:USB,0</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -2511,7 +2511,7 @@
     </param>
     <param>
       <key>const</key>
-      <value>float(sps)*.4</value>
+      <value>float(sps)*.25</value>
     </param>
     <param>
       <key>affinity</key>
@@ -2672,7 +2672,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(448, 696)</value>
+      <value>(424, 704)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2680,7 +2680,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>blocks_null_sink_1</value>
+      <value>blocks_null_sink_1_1</value>
     </param>
     <param>
       <key>type</key>
@@ -3139,7 +3139,7 @@
     </param>
     <param>
       <key>vector</key>
-      <value>256,257</value>
+      <value>2**bits_per_symbol,2**bits_per_symbol+1</value>
     </param>
   </block>
   <block>
@@ -5358,7 +5358,7 @@
     </param>
     <param>
       <key>label1</key>
-      <value></value>
+      <value>pilot</value>
     </param>
     <param>
       <key>marker1</key>
@@ -6644,7 +6644,7 @@
   </connection>
   <connection>
     <source_block_id>audio_source_0</source_block_id>
-    <sink_block_id>blocks_null_sink_1</sink_block_id>
+    <sink_block_id>blocks_null_sink_1_1</sink_block_id>
     <source_key>1</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -6682,7 +6682,7 @@
     <source_block_id>blocks_complex_to_real_0</source_block_id>
     <sink_block_id>audio_sink_0</sink_block_id>
     <source_key>0</source_key>
-    <sink_key>0</sink_key>
+    <sink_key>2</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_delay_0</source_block_id>
@@ -6766,7 +6766,19 @@
     <source_block_id>blocks_null_source_0</source_block_id>
     <sink_block_id>audio_sink_0</sink_block_id>
     <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_null_source_0</source_block_id>
+    <sink_block_id>audio_sink_0</sink_block_id>
+    <source_key>0</source_key>
     <sink_key>1</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_null_source_0</source_block_id>
+    <sink_block_id>audio_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>3</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_packed_to_unpacked_xx_0</source_block_id>
