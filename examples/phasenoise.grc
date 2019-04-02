@@ -6246,11 +6246,11 @@
     </param>
     <param>
       <key>cfo_ampl</key>
-      <value>0</value>
+      <value>10</value>
     </param>
     <param>
       <key>cfo_freq</key>
-      <value>.1</value>
+      <value>100</value>
     </param>
     <param>
       <key>comment</key>
