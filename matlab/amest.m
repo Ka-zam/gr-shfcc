@@ -78,7 +78,10 @@ Xp = exp(-1i*2*pi*nv*(mh+0.5)/N).*X;
     end
     % Amplitude estimate
     alpha = 1j*pi/N./( 1 + exp(1j*2*pi*d(niter,:)) );
-    ac( niter , : ) = mean( Yp*( d(niter,:) + .5 ) + Yn*( d(niter,:) - .5 ) ).*alpha;
+    %ac( niter , : ) = mean( Yp.*( d(niter,:) + .5 ) + Yn.*( d(niter,:) - .5 ) ).*alpha;
+    acp( niter , : ) =  Yp.*( d(niter,:) + .5 ) ;
+    acn( niter , : ) =  Yn.*( d(niter,:) - .5 ) ;
+    ac( niter , : )  = ( acp(niter,:) + acn(niter,:) ).*alpha;
 
  end
 
