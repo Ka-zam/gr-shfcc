@@ -62,6 +62,7 @@ namespace gr {
   		int32_t idx;
   		gr_complex pha = (1.f,0.f);
   		gr_complex pha_inc;
+      gr_complex alpha,acp,acn;
 	    float d[2]  = {0.f,0.f};
 	    gr_complex Yn, Yp;
 
@@ -89,12 +90,51 @@ namespace gr {
 
 
         // Q = 0
+        // D == 1
+        Yn = gr_complex(0.f,0.f);
+        Yp = gr_complex(0.f,0.f);
+        for (int i = 0; i < d_calc_len; ++i)
+        {
+          Yn += d_cpx_data[i];
+          Yp += d_cpx_datb[i];
+        }
 
+        //ALG == 1
+        d[0] = 0.5f*real( (Yp+Yn)/(Yp-Yn) );
+        //alpha = gr_complex( 0.f , M_PI/float(d_calc_len)/( 1.f + exp( gr_complex(0.f,2.f*M_PI*d[0]))) );
+        //acp = Yp*( d[0] + 0.5f );
+        //acn = Yn*( d[0] - 0.5f );
+        //amplitude = ( acp + acn )*alpha;
 
 
         // Q = 1
+        pha_inc = exp(gr_complex(0.f, -2.f*M_PI/float(d_calc_len)*d[0]));
+        volk_32fc_s32fc_x2_rotator_32fc(d_cpx_data, d_cpx_data, pha_inc, &pha, d_calc_len);
+        // d_cpx_data = D*Xn
+        volk_32fc_s32fc_x2_rotator_32fc(d_cpx_datb, d_cpx_datb, pha_inc, &pha, d_calc_len);
+        // d_cpx_datb = D*Xp
+        
+        Yn = gr_complex(0.f,0.f);
+        Yp = gr_complex(0.f,0.f);
+        for (int i = 0; i < d_calc_len; ++i)
+        {
+          Yn += d_cpx_data[i];
+          Yp += d_cpx_datb[i];
+        } 
+        d[1] = 0.5f*real( (Yp+Yn)/(Yp-Yn) );
 
+        alpha = gr_complex( 0.f , 1.f )*float(M_PI)/float(d_calc_len)/( 1.f + exp( gr_complex(0.f,2.f*M_PI*(d[0] + d[1] ))) );
+        acp = Yp*( d[0] + d[1] + 0.5f );
+        acn = Yn*( d[0] + d[1] - 0.5f );
 
+        *amplitude = ( acp + acn )*alpha;
+
+        if (idx >= d_calc_len/2.f )
+        {
+          idx -= d_calc_len;
+        }
+
+        *freq = ( float(idx) + d[0] + d[1] )/float(d_calc_len);
 
   		return;
   	}

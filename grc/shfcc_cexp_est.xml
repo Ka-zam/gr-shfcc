@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>Estimate complex exp</name>
+  <name>CExp Estimate</name>
   <key>shfcc_cexp_est</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
@@ -9,6 +9,7 @@
   <param>
     <name>Sampling rate</name>
     <key>fs</key>
+    <value>samp_rate</value>
     <type>real</type>
   </param>
 
