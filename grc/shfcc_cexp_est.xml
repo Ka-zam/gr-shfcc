@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<block>
+  <name>Estimate complex exp</name>
+  <key>shfcc_cexp_est</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.cexp_est($fs, $calc_len)</make>
+
+  <param>
+    <name>Sampling rate</name>
+    <key>fs</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Calulation Length</name>
+    <key>calc_len</key>
+    <value>16</value>
+    <type>int</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <source>
+    <name>freq</name>
+    <type>float</type>
+  </source>  
+  <source>
+    <name>amplitude</name>
+    <type>complex</type>
+  </source>  
+
+</block>

@@ -25,5 +25,6 @@ install(FILES
     api.h
     phase_noise_mixer_cc.h
     pack_bs.h
-    map_ss.h DESTINATION include/shfcc
+    map_ss.h
+    cexp_est.h DESTINATION include/shfcc
 )
