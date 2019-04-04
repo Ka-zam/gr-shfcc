@@ -1,4 +1,4 @@
-function [f,ac] = amest(X,Alg,Q)
+function [out,varargout] = amest(X,Alg,Q)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
@@ -78,15 +78,20 @@ Xp = exp(-1i*2*pi*nv*(mh+0.5)/N).*X;
     elseif Alg == 2
         d(niter,:) =  0.5*(abs(Yp)-abs(Yn))./(abs(Yp)+abs(Yn));
     end
-    % Amplitude estimate
-    alpha = 1j*pi/N./( 1 + exp(1j*2*pi*d(niter,:)) );
-    acp( niter , : ) =  Yp.*( d(niter,:) + .5 ) ;
-    acn( niter , : ) =  Yn.*( d(niter,:) - .5 ) ;
-    ac( niter , : )  = ( acp(niter,:) + acn(niter,:) ).*alpha;
-
  end
 
 m = (mh>=N/2).*(mh-N)+(mh<N/2).*mh; %Calculate the index between -N/2 and N/2-1
 
 f = (m+sum(d))/N;
-ac = ac( Q , : );
+
+Rk = X.*exp(-1j*2*pi*nv.*f );
+
+out = zeros(3,M);
+out(1,:) = f;
+out(2,:) = abs(sum(Rk))/N;
+out(3,:) = angle(sum(Rk));
+if nargout > 1
+    varargout = {exp( 1j*2*pi*nv*f )*sum(Rk)/N};
+end
+
+    
