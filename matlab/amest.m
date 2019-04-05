@@ -93,5 +93,3 @@ out(3,:) = angle(sum(Rk));
 if nargout > 1
     varargout = {exp( 1j*2*pi*nv*f )*sum(Rk)/N};
 end
-
-    
