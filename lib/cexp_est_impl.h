@@ -13,7 +13,10 @@
 
 #include <shfcc/cexp_est.h>
 #include <gnuradio/fft/fft.h>
+#include <string>
+#include <iostream>
 
+using namespace std;
 namespace gr {
   namespace shfcc {
 
@@ -25,10 +28,16 @@ namespace gr {
      	int d_calc_len;
      	gr_complex* d_cpx_data;
      	gr_complex* d_cpx_datb;
+      gr_complex* SCRATCH;
      	float* d_flt_data;
      	size_t d_alignment;
 
      	void amest(float *freq , gr_complex *amplitude , const gr_complex *in_data  );
+      void printz(const string &s,const gr_complex &x);
+      void printz(const string &s, const gr_complex *x,const int N);
+      void printz(const string &s, float *x,const int N);
+      void printz(const string &s, int8_t *x,const int N);
+      void printz(const string &s, float *x,const int rows, const int cols);
 
      public:
       cexp_est_impl(float fs, int calc_len);
