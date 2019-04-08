@@ -47,15 +47,43 @@ function myplot(handles)
 snr = get(handles.sl_snr , 'Value' );
 amp = get(handles.sl_amp , 'Value' );
 pha = get(handles.sl_pha , 'Value' );
-x1 = cexp(1,11,100,snr);
-x2 = cexp(1,11,100,snr)*amp*exp(1j*pha/180*pi);
+x1 = cexp(1,10,100,snr);
+x2 = cexp(1,10,100,snr)*amp*exp(1j*pha/180*pi);
 xc = xcorr(x2,x1);
 
-pd = phasediff(x2,x1)*180/pi;
+xc2 = ifft( fft(x1,200) .* conj(fft(x2,200)) );
+%xc2 = ifft( fft(x1) .* conj(fft(x2)) );
+
+pd1 = phasediff(x2,x1,100)*180/pi;
+
+
 plot(handles.axes2 , abs(xc) );
+hold(handles.axes2,'on')
+plot(handles.axes2 , abs(xc2) );
+hold(handles.axes2,'off')
+
+
 plot(handles.axes1 , real([x1 x2] ) );
 
-set( handles.txt_res , 'String' , ['Phase difference: ' num2str(pd) ]);
+fac = amest(x1);
+%Do filtering
+%[tmpb,tmpa] = ellip(3,.5,20,.05);
+%[b,a]= iirlp2xn(tmpb,tmpa,[-.05 .05],[ -.15 -.05]);
+%x3 = filter(10*b,a,x1);
+%x4 = filter(10*b,a,x2);
+%hold(handles.axes1,'on')
+%plot(handles.axes1 , real([x3 x4] ) );
+%hold(handles.axes1,'off')
+
+%xc = xcorr(x4,x3);
+
+pd2 = angle(xc2(1))*180/pi;
+
+
+s = {  ['Phase difference  : ' num2str(pd1) ] ,...
+       ['Phase difference 2: ' num2str(pd2) ] ,...
+       ['Est. frequency: ' num2str(fac(1)) ] };
+set( handles.txt_res , 'String' , s);
 
 
 
