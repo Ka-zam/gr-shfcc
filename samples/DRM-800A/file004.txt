@@ -1,0 +1,8 @@
+QPSK
+32 sps
+PS (0,-1.5j) (1.5,0j) every 32
+
+P_pilot = -10dB
+f_pilot = 2kHz
+fc = 6 kHz
+fs = 96 kHz
