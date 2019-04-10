@@ -8,7 +8,8 @@ end
 
 xc = xcorr(x1,x2);
 if N < 0
-    [~,idx] = max(abs(xc));
+    idx = length(x1);
+    %[~,idx] = max(abs(xc))
 else
     idx = N;
 end

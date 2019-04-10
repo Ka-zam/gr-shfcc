@@ -9,6 +9,31 @@ def sinepulse( Nper = 3, fc = 1000.0 , fs = 96000.0 ):
 
 	return np.sin(2*np.pi*fc*t) * signal.triang(N)
 
+def chunks(s , l):
+    chunk_size =  len(s)//l
+    return [ s[i:i+chunk_size] for i in range(0, len(s), chunk_size) ]
+
+def ordered_symbols( bits_per_symbol = 2 ):
+	# Return a list of byte values that step through all possible symbols
+
+	bits_per_byte = 8
+	number_of_symbols = 2**bits_per_symbol
+	number_of_bytes = bits_per_symbol*number_of_symbols/bits_per_byte
+	symbols = range(number_of_symbols)
+	binstr = ''
+	fmt = '{0:0' + str(bits_per_symbol) + 'b}'
+	for s in symbols:
+		binstr =  fmt.format(s) + binstr
+
+	binstr = chunks( binstr , number_of_bytes )
+	binstr = binstr[::-1]
+
+	out = []
+	for b in binstr:
+		out.append( int(b,2) )
+
+	return out
+
 
 class spiralqam():
 

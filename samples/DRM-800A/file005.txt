@@ -6,3 +6,4 @@ P_pilot = -100dB
 f_pilot = 2kHz
 fc = 6 kHz
 fs = 96 kHz
+EXBW = .2

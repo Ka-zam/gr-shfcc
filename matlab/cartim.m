@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 24-Mar-2019 17:07:01
+% Last Modified by GUIDE v2.5 10-Apr-2019 14:27:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,6 +88,24 @@ else
     s =  4;   
 end
 
+function out = insert_vec(x , v , p )
+%insert v into x with periodicity p
+N = floor(length(x)/p);
+if N == 0
+    out = x;
+    return;
+end
+out = [];
+v = v(:);
+for n = 0:N-1
+    out = [ out; v ; x( n*p+1 : n*p+p ) ];
+end
+if n*p+p < length(x)
+    out = [ out ; x(n*p+p+1:end) ];
+end
+%out = out(1:length(x));
+    
+
 function myplot(handles)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,8 +118,12 @@ input.fdw = input.fup*(1 + .01*get(handles.sl_cfo,'Value'));
 order = handles.order;
 Nsym = str2double( get(handles.ed_nsym,'String') );
 
-symbols = randi( order , Nsym , 1) - 1;
-%symbols = mod([0:Nsym]', order );
+if get(handles.cb_rndsym , 'Value') > 0.
+    symbols = randi( order , Nsym , 1) - 1;
+else
+    symbols = mod([0:Nsym-1]', order );
+    %symbols = 2*ones(Nsym,1);
+end
 
 if handles.orderhaschanged
     if order == 8
@@ -110,7 +132,7 @@ if handles.orderhaschanged
     else
         input.bb = qammod( symbols , order , 'UnitAveragePower', true );
         % Zero:th symbol always in lower left corner
-        mag = abs( qammod(0, order , 'UnitAveragePower', true ) );        
+        mag = 1.25*abs( qammod(0, order , 'UnitAveragePower', true ) );        
     end
     %Insert pilot symbols
     if get(handles.rb_pilot,'Value') > 0
@@ -118,10 +140,11 @@ if handles.orderhaschanged
             input.bb(1:10:end) = mag*exp(1j*0*pi/180);
         else
             % "A New Design of Pilot Symbol in 16QAM Channels" 
-            %input.bb(1:10:end) = 1.2*mag*exp(1j*0*pi/180);
-            input.bb(1:30:end) = mag*exp(1j*-90*pi/180);
-            input.bb(2:30:end) = mag*exp(1j*0*pi/180);
-            input.bb(3:30:end) = mag*exp(1j*90*pi/180);
+%            psym = [ -1j*mag 1*mag ];
+            psym = [ -1j*mag ];
+            
+            input.bb = insert_vec( input.bb , psym , 16 );
+            
         end
     end
     handles.bb = input.bb;
@@ -165,7 +188,7 @@ if isfield(handles,'meabb') && get(handles.rb_measured,'Value')
     carrier = exp(-1j*(2*pi*input.fdw*t + input.phi/180*pi));
     bb = rf.*carrier;
     rf = rf_tmp;
-    Nsym = floor(length(bb)/input.sps)-40;
+    Nsym = floor(length(bb)/input.sps);
     
     %Filter
     Brrc = rcosdesign( input.beta , input.rrcspan , input.sps , 'sqrt');
@@ -184,8 +207,10 @@ end
 
 % Axes1
 i = [1:length(bb)]';
+Nsym = min( [Nsym floor( (length(bb)-input.sps*input.rrcspan)/input.sps) ] );
 idx = [input.rrcspan*input.sps+1:input.sps:...
-    input.rrcspan*input.sps+input.sps*Nsym]';
+    input.sps*( input.rrcspan + Nsym ) ]';
+
 
 lim1 = get(handles.axes1,{'xlim','ylim'});  % Get axes limits.
 
@@ -196,13 +221,14 @@ plot(handles.axes1,...
 xmin = max([idx(1)-2*input.sps 1]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
-ymin = -max(abs(real(bb)))*1.1;
+ymin = min([-max(abs(real(bb))) -max(abs(imag(bb)))])*1.1;
 ymax= -ymin;
 ylim(handles.axes1, [ymin ymax])
 grid(handles.axes1, 'on')
 if get(handles.cb_keep_zoom,'Value') > 0.0
     set(handles.axes1,{'xlim','ylim'},lim1);
 end
+legend( handles.axes1 , 'RE' , 'IM' )
 
 % Axes2
 if strcmp( get(handles.tb_const,'String') , 'Const' )
@@ -236,6 +262,8 @@ else
     plot(handles.axes2, 180/pi*unwrap(angle(bb(idx))) , 'r-*' );
     xlim(handles.axes2, [1 length(idx)])
     grid(handles.axes2, 'on')
+    legend( handles.axes2 , 'ABS' , 'PHA' )
+    
     if get(handles.cb_keep_zoom,'Value') > 0.0
         set(handles.axes2,{'xlim','ylim'},lim2);
     end    
@@ -594,6 +622,7 @@ if get(handles.sl_tau,'Value') > sps
     set(handles.txt_tau,'String' , str );
 end
 set(handles.sl_tau,'Max',sps);
+set(handles.sl_tau,'SliderStep',[.1/sps  1./sps ]);
 
 guidata(hObject, handles);
 myplot(handles);
@@ -722,3 +751,16 @@ function cb_keep_zoom_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of cb_keep_zoom
+
+
+% --- Executes on button press in cb_rndsym.
+function cb_rndsym_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_rndsym (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of cb_rndsym
+handles.orderhaschanged = true;
+guidata(hObject, handles);
+myplot(handles);
+
