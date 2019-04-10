@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 10-Apr-2019 14:27:36
+% Last Modified by GUIDE v2.5 11-Apr-2019 00:04:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,6 +88,9 @@ else
     s =  4;   
 end
 
+function fpt = tapesync( rf )
+fpt = length(rf);
+
 function out = insert_vec(x , v , p )
 %insert v into x with periodicity p
 N = floor(length(x)/p);
@@ -106,7 +109,17 @@ end
 %out = out(1:length(x));
     
 
-function myplot(handles)
+function myplot(handles,flag)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setup
+if nargin < 2
+    AUTO = false;
+elseif strcmp(flag,'auto')
+    AUTO = true;
+else
+    AUTO = false;
+end 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input
@@ -164,8 +177,9 @@ input.tau = get(handles.sl_tau,'Value');
 input.phi = get(handles.sl_cpo,'Value');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Printing
+% Printing
 cstr = cell(4,1);
 cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3,'%5.2f') ' kbaud' ];
 cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3,'%5.2f') ' kbps' ];
@@ -201,6 +215,12 @@ else
     [bb,rf] = tapebb( input );
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Estimation
+if AUTO
+    fpt = tapesync( rf );    
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting
@@ -764,3 +784,10 @@ handles.orderhaschanged = true;
 guidata(hObject, handles);
 myplot(handles);
 
+
+% --- Executes on button press in pb_auto.
+function pb_auto_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_auto (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myplot(handles,'auto')
