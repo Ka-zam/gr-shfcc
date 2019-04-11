@@ -15,7 +15,9 @@ if nargin == 0
     input.fdw = 6e3;
     Order = 4;
     Nsym = 64;
-    symbols = randi( Order, Nsym , 1) - 1;
+    %symbols = randi( Order, Nsym , 1) - 1;
+    symbols = mod([0:Nsym-1]', Order );
+
     
     input.bb = qammod( symbols , Order , 'UnitAveragePower', true );
     input.snr = 40;

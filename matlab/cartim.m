@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 11-Apr-2019 00:04:58
+% Last Modified by GUIDE v2.5 11-Apr-2019 13:31:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -90,24 +90,7 @@ end
 
 function fpt = tapesync( rf )
 fpt = length(rf);
-
-function out = insert_vec(x , v , p )
-%insert v into x with periodicity p
-N = floor(length(x)/p);
-if N == 0
-    out = x;
-    return;
-end
-out = [];
-v = v(:);
-for n = 0:N-1
-    out = [ out; v ; x( n*p+1 : n*p+p ) ];
-end
-if n*p+p < length(x)
-    out = [ out ; x(n*p+p+1:end) ];
-end
-%out = out(1:length(x));
-    
+   
 
 function myplot(handles,flag)
 
@@ -154,9 +137,8 @@ if handles.orderhaschanged
         else
             % "A New Design of Pilot Symbol in 16QAM Channels" 
 %            psym = [ -1j*mag 1*mag ];
-            psym = [ -1j*mag ];
-            
-            input.bb = insert_vec( input.bb , psym , 16 );
+            psym = [ -1j*mag ];       
+            input.bb = insert_vector( input.bb , psym , 15 , true);
             
         end
     end
@@ -180,7 +162,7 @@ input.phi = get(handles.sl_cpo,'Value');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Printing
-cstr = cell(4,1);
+cstr = cell(7,1);
 cstr{1} = ['Symbol rate : ' num2str(input.fs/input.sps/1e3,'%5.2f') ' kbaud' ];
 cstr{2} = ['Bitrate     : ' num2str(input.fs/input.sps*log2(order)/1e3,'%5.2f') ' kbps' ];
 cstr{3} = ['OBW         : ' ...
@@ -188,6 +170,12 @@ cstr{3} = ['OBW         : ' ...
 cstr{4} = ['BER         : ' ];
 cstr{5} = ['EVM         : ' ];
 cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
+sps =  (1-get(handles.sl_cfo,'Value')*.01)*input.sps;
+cstr{7} = ['SPS         : ' num2str( sps , '%5.3f' ) ];
+%set(handles.txt_data,'String',cstr);
+
+
+
 set(handles.txt_data,'String',cstr);
 set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -228,16 +216,23 @@ end
 % Axes1
 i = [1:length(bb)]';
 Nsym = min( [Nsym floor( (length(bb)-input.sps*input.rrcspan)/input.sps) ] );
-idx = [input.rrcspan*input.sps+1:input.sps:...
-    input.sps*( input.rrcspan + Nsym ) ]';
+%idx = [input.rrcspan*input.sps+1:input.sps:...
+%    input.sps*( input.rrcspan + Nsym ) ]';
 
+idx = [ input.rrcspan*input.sps+1 : sps :...
+    input.sps*( input.rrcspan + Nsym ) ]';
+intbb = interp1( i , bb , idx );
 
 lim1 = get(handles.axes1,{'xlim','ylim'});  % Get axes limits.
 
+
 %plot(handles.axes1,...
 %    i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
-plot(handles.axes1,...
-    i,real(bb),i,imag(bb),idx,real(bb(idx)),'b*',idx,imag(bb(idx)),'r*')
+plot(handles.axes1, i , real(bb) , i , imag(bb) );
+hold( handles.axes1 , 'on' );
+plot(handles.axes1 , idx , real(intbb) , 'b*' , idx , imag(intbb), 'r*' );
+hold( handles.axes1 , 'off' );
+
 xmin = max([idx(1)-2*input.sps 1]);
 xmax = i(end);
 xlim(handles.axes1, [xmin xmax ])
@@ -253,15 +248,15 @@ legend( handles.axes1 , 'RE' , 'IM' )
 % Axes2
 if strcmp( get(handles.tb_const,'String') , 'Const' )
 %if true
+    cla(handles.axes2,'reset');
     yyaxis(handles.axes2, 'right');
-    cla(handles.axes2);
     yyaxis(handles.axes2, 'left');
     cla(handles.axes2);
     lim2 = get(handles.axes2,{'xlim','ylim'});  % Get axes limits.
     
-    plot(handles.axes2, bb(idx) , '*' );
-    rmax = max(abs(real(bb(idx))));
-    imax = max(abs(imag(bb(idx))));
+    plot(handles.axes2, intbb , '*' );
+    rmax = max(abs(real(intbb)));
+    imax = max(abs(imag(intbb)));
     rmax = max([rmax imax])*1.1;
     
     
@@ -273,7 +268,7 @@ if strcmp( get(handles.tb_const,'String') , 'Const' )
     end    
 else
     %eyediagram( handles.axes2 , bb , input.sps );
-    cla(handles.axes2);
+    cla(handles.axes2,'reset');
     yyaxis(handles.axes2, 'left');
     plot(handles.axes2, abs(bb(idx)) , 'b-*' );
     xlim(handles.axes2, [1 length(idx)])
@@ -642,7 +637,7 @@ if get(handles.sl_tau,'Value') > sps
     set(handles.txt_tau,'String' , str );
 end
 set(handles.sl_tau,'Max',sps);
-set(handles.sl_tau,'SliderStep',[.1/sps  1./sps ]);
+set(handles.sl_tau,'SliderStep',[.05/sps  1./sps ]);
 
 guidata(hObject, handles);
 myplot(handles);
