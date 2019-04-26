@@ -31,6 +31,7 @@ list(APPEND shfcc_sources
     pack_bs_impl.cc
     map_ss_impl.cc
     cexp_est_impl.cc
+    tape_speed_ff_impl.cc
 )
 
 set(shfcc_sources "${shfcc_sources}" PARENT_SCOPE)

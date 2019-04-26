@@ -1,6 +1,6 @@
 function pha_diff = phasediff(x1,x2, N)
 % function pha_diff = phasediff(x1,x2,N)
-% Compute pahse difference between the periodic signals
+% Compute phase difference between the periodic signals
 if nargin < 3
     N = -1;
 end

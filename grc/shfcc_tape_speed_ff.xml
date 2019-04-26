@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<block>
+  <name>Tape Variable Speed</name>
+  <key>shfcc_tape_speed_ff</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.tape_speed_ff($srate, $stddev, $maxdev, $cyclicfreq, $cyclicamp, $seed)</make>
+    <callback>set_std_dev($stdev)</callback>
+    <callback>set_max_dev($maxdev)</callback>
+    <callback>set_cyclic_freq($cyclicfreq)</callback>
+    <callback>set_cyclic_amp($cyclicamp)</callback>
+    <callback>set_samp_rate($srate)</callback>
+
+  <param>
+    <name>Sample Rate Hz</name>
+    <key>srate</key>
+    <value>samp_rate</value>
+    <type>real</type>
+  </param>
+  <param>
+    <name>Cyclic Rate Hz</name>
+    <key>cyclicfreq</key>
+    <value>6.0</value>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Cyclic Amplitude</name>
+    <key>cyclicamp</key>
+    <value>.001</value>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>SRO Standard Deviation Hz per sample</name>
+    <key>stdev</key>
+    <value>0.01</value>
+    <type>real</type>
+  </param>
+  <param>
+    <name>Max SRO Bound Hz</name>
+    <key>maxdev</key>
+    <value>1e3</value>
+    <type>real</type>
+  </param>
+  <param>
+    <name>Seed</name>
+    <key>seed</key>
+    <value>0</value>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

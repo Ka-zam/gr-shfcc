@@ -26,5 +26,6 @@ install(FILES
     phase_noise_mixer_cc.h
     pack_bs.h
     map_ss.h
-    cexp_est.h DESTINATION include/shfcc
+    cexp_est.h
+    tape_speed_ff.h DESTINATION include/shfcc
 )
