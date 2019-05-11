@@ -13,6 +13,7 @@
 #include "shfcc/map_ss.h"
 #include "shfcc/cexp_est.h"
 #include "shfcc/tape_speed_ff.h"
+#include "shfcc/vaverage_ff.h"
 %}
 
 
@@ -26,3 +27,6 @@ GR_SWIG_BLOCK_MAGIC2(shfcc, map_ss);
 GR_SWIG_BLOCK_MAGIC2(shfcc, cexp_est);
 %include "shfcc/tape_speed_ff.h"
 GR_SWIG_BLOCK_MAGIC2(shfcc, tape_speed_ff);
+
+%include "shfcc/vaverage_ff.h"
+GR_SWIG_BLOCK_MAGIC2(shfcc, vaverage_ff);

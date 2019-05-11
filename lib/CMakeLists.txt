@@ -25,14 +25,13 @@ include(GrPlatform) #define LIB_SUFFIX
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
-
 list(APPEND shfcc_sources
     phase_noise_mixer_cc_impl.cc
     pack_bs_impl.cc
     map_ss_impl.cc
     cexp_est_impl.cc
     tape_speed_ff_impl.cc
-)
+    vaverage_ff_impl.cc )
 
 set(shfcc_sources "${shfcc_sources}" PARENT_SCOPE)
 if(NOT shfcc_sources)
@@ -62,11 +61,10 @@ GR_LIBRARY_FOO(gnuradio-shfcc RUNTIME_COMPONENT "shfcc_runtime" DEVEL_COMPONENT 
 include(GrTest)
 
 include_directories(${CPPUNIT_INCLUDE_DIRS})
-
 list(APPEND test_shfcc_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_shfcc.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_shfcc.cc
-)
+    )
 
 add_executable(test-shfcc ${test_shfcc_sources})
 

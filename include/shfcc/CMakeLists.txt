@@ -27,5 +27,6 @@ install(FILES
     pack_bs.h
     map_ss.h
     cexp_est.h
-    tape_speed_ff.h DESTINATION include/shfcc
+    tape_speed_ff.h
+    vaverage_ff.h DESTINATION include/shfcc
 )

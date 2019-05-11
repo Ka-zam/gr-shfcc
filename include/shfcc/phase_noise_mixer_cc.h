@@ -9,9 +9,11 @@ namespace gr {
   namespace shfcc {
 
     /*!
-     * \brief <Mixer with optional phase noise impairment>
+     * \brief Mixer with optional phase noise impairment
      * \ingroup shfcc
      *
+     * \details
+     * Mixer with variable phase noise
      */
     class SHFCC_API phase_noise_mixer_cc : virtual public gr::sync_block
     {

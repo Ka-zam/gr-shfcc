@@ -82,6 +82,6 @@ namespace gr {
       return noutput_items;
     }
 
-  } /* namespace sapp */
+  } /* namespace shfcc */
 } /* namespace gr */
 

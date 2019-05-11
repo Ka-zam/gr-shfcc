@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<block>
+  <name>Vector average</name>
+  <key>shfcc_vaverage_ff</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.vaverage_ff($m, $vlen)</make>
+
+  <param>
+    <name>Average over M</name>
+    <key>m</key>
+    <value>1</value>    
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Vec Length</name>
+    <key>vlen</key>
+    <value>1</value>    
+    <type>int</type>
+  </param>  
+  <check>$vlen &gt; 0</check>
+  <check>$m &gt; 1</check>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$vlen</vlen>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>$vlen</vlen>    
+  </source>
+</block>

@@ -1,11 +1,11 @@
-function out = yeest(x, Q)
+function [f,A,snr] = yeest(x, Q)
 %Estimate f, A and phi for a real sinusoid
 % x = abs(A)*cos( 2*pi*f*t + angle(A) ) + w
 % where w is Gaussian with variance sigma^2 and
 % SNR = abs(A)^2/(2*sigma^2)
 
 if nargin < 2
-    Q = 2;
+    Q = 3;
 end
 
 x = x(:);
@@ -44,10 +44,13 @@ end
 
 P_tot = var(x);
 P_sig = 2*A*conj(A);
+
 if P_tot > P_sig
     snr   = P_sig/(P_tot-P_sig);
 else
     snr = NaN;
 end
 
-out = [ 2*abs(A) (m+delta)/N angle(A) 10*log10(snr) ];
+f = (m+delta)/N;
+
+%out = [ 2*abs(A) (m+delta)/N angle(A) 10*log10(snr) ];

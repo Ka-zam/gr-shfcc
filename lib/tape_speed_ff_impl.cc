@@ -43,7 +43,7 @@ namespace gr {
       		d_samp_rate(sample_rate_hz),
     		d_max_dev_hz(max_dev_hz), 
     		d_std_dev_hz(std_dev_hz),
-			d_interp(new gr::filter::mmse_fir_interpolator_cc()),
+			d_interp(new gr::filter::mmse_fir_interpolator_ff()),
     		d_noise(gr::analog::fastnoise_source_f::make(analog::GR_GAUSSIAN, std_dev_hz, noise_seed)),
     		d_noise_seed(noise_seed)
     {
