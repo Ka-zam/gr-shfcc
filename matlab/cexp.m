@@ -9,6 +9,12 @@ end
 if nargin < 3
     N = 10;
 end
+if N == 0
+    %Periodic length
+    [g,c,d] = gcd( fs , fc );
+    N = round( fs/g * fc/g );
+    disp(N)
+end
 if nargin < 2
     fs = 96e3;
 end

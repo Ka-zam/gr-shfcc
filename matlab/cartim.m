@@ -170,11 +170,13 @@ cstr{3} = ['OBW         : ' ...
 cstr{4} = ['BER         : ' ];
 cstr{5} = ['EVM         : ' ];
 cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
+
+%Change sps according to SRO
 sps =  (1-get(handles.sl_cfo,'Value')*.01)*input.sps;
+
 cstr{7} = ['SPS         : ' num2str( sps , '%5.3f' ) ];
-%set(handles.txt_data,'String',cstr);
 
-
+cstr{4} = ['FDW         : ' num2str( input.fdw , '%5.3f' ) ];
 
 set(handles.txt_data,'String',cstr);
 set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
@@ -218,6 +220,8 @@ i = [1:length(bb)]';
 Nsym = min( [Nsym floor( (length(bb)-input.sps*input.rrcspan)/input.sps) ] );
 %idx = [input.rrcspan*input.sps+1:input.sps:...
 %    input.sps*( input.rrcspan + Nsym ) ]';
+
+%Change sps according to SRO
 
 idx = [ input.rrcspan*input.sps+1 : sps :...
     input.sps*( input.rrcspan + Nsym ) ]';
@@ -270,11 +274,12 @@ else
     %eyediagram( handles.axes2 , bb , input.sps );
     cla(handles.axes2,'reset');
     yyaxis(handles.axes2, 'left');
-    plot(handles.axes2, abs(bb(idx)) , 'b-*' );
+    plot(handles.axes2, abs(intbb) , 'b-*' );
     xlim(handles.axes2, [1 length(idx)])
     yyaxis(handles.axes2, 'right');
     lim2 = get(handles.axes2,{'xlim','ylim'});  % Get axes limits.    
-    plot(handles.axes2, 180/pi*unwrap(angle(bb(idx))) , 'r-*' );
+%    plot(handles.axes2, 180/pi*unwrap(angle(intbb)) , 'r-*' );
+    plot(handles.axes2, 180/pi*angle(intbb) , 'r-*' );
     xlim(handles.axes2, [1 length(idx)])
     grid(handles.axes2, 'on')
     legend( handles.axes2 , 'ABS' , 'PHA' )
