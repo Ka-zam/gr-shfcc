@@ -89,6 +89,16 @@ else
 end
 
 function fpt = tapesync( rf )
+%Estimate parameters from real passband signal
+% and knowledge of:
+%  Nominal omega  (center freq)
+%  - " -   alpha  (samples per symbol)
+%  p(k)    Pilot symbol(s)
+%  s       Pilot spacing
+
+
+% alpha_hat = alpha*(1-(omega_hat-omega)/omega)
+
 fpt = length(rf);
    
 
