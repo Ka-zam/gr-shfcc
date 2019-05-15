@@ -88,7 +88,7 @@ else
     s =  4;   
 end
 
-function fpt = tapesync( rf )
+function fpt = tapesync( rf , input )
 %Estimate parameters from real passband signal
 % and knowledge of:
 %  Nominal omega  (center freq)
@@ -99,7 +99,26 @@ function fpt = tapesync( rf )
 
 % alpha_hat = alpha*(1-(omega_hat-omega)/omega)
 
+
 fpt = length(rf);
+
+function e = qpsk_magnitude_error( rf , param , input)
+%
+
+idx_start = 800;
+omega_hat = param(1);
+tau_hat = param(2);
+phi_hat = param(3);
+
+lo = cexp(-omega_hat, input.fs , length(rf) );
+rf = rf.*lo;
+
+bb = interp1( bb , [1+input.tau : 1 : length(bb) ] );
+
+
+
+
+%Compute the error
    
 
 function myplot(handles,flag)
@@ -228,10 +247,6 @@ end
 % Axes1
 i = [1:length(bb)]';
 Nsym = min( [Nsym floor( (length(bb)-input.sps*input.rrcspan)/input.sps) ] );
-%idx = [input.rrcspan*input.sps+1:input.sps:...
-%    input.sps*( input.rrcspan + Nsym ) ]';
-
-%Change sps according to SRO
 
 idx = [ input.rrcspan*input.sps+1 : sps :...
     input.sps*( input.rrcspan + Nsym ) ]';
@@ -292,7 +307,7 @@ else
     plot(handles.axes2, 180/pi*angle(intbb) , 'r-*' );
     xlim(handles.axes2, [1 length(idx)])
     grid(handles.axes2, 'on')
-    legend( handles.axes2 , 'ABS' , 'PHA' )
+    legend( handles.axes2 , 'ABS' , 'PHA' , 'Location' , 'north')
     
     if get(handles.cb_keep_zoom,'Value') > 0.0
         set(handles.axes2,{'xlim','ylim'},lim2);
