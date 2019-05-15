@@ -218,7 +218,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1496, 148)</value>
+      <value>(1504, 148)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -284,7 +284,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>6</value>
     </param>
   </block>
   <block>
@@ -876,7 +876,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>16</value>
+      <value>10</value>
     </param>
   </block>
   <block>
@@ -1053,6 +1053,69 @@
     <param>
       <key>repeat</key>
       <value>True</value>
+    </param>
+  </block>
+  <block>
+    <key>analog_sig_source_x</key>
+    <param>
+      <key>amp</key>
+      <value>.5</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>freq</key>
+      <value>samp_rate/sps</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(88, 548)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>analog_sig_source_x_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>offset</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>samp_rate</key>
+      <value>samp_rate</value>
+    </param>
+    <param>
+      <key>waveform</key>
+      <value>analog.GR_COS_WAVE</value>
     </param>
   </block>
   <block>
@@ -1389,7 +1452,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file005.f32</value>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file007.f32</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1742,7 +1805,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(304, 640)</value>
+      <value>(256, 640)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1797,7 +1860,7 @@
     </param>
     <param>
       <key>endianness</key>
-      <value>gr.GR_MSB_FIRST</value>
+      <value>gr.GR_LSB_FIRST</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2081,6 +2144,53 @@
     <param>
       <key>vector</key>
       <value>ordered_symbols(bits_per_symbol)</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_wavfile_sink</key>
+    <param>
+      <key>bits_per_sample</key>
+      <value>16</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file08.wav</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(600, 796)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_wavfile_sink_0</value>
+    </param>
+    <param>
+      <key>nchan</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>samp_rate</key>
+      <value>samp_rate</value>
     </param>
   </block>
   <block>
@@ -5018,8 +5128,20 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>analog_sig_source_x_0</source_block_id>
+    <sink_block_id>audio_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>3</sink_key>
+  </connection>
+  <connection>
     <source_block_id>audio_source_0</source_block_id>
     <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>audio_source_0</source_block_id>
+    <sink_block_id>blocks_wavfile_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -5028,6 +5150,12 @@
     <sink_block_id>blocks_null_sink_0_0</sink_block_id>
     <source_key>1</source_key>
     <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>audio_source_0</source_block_id>
+    <sink_block_id>blocks_wavfile_sink_0</sink_block_id>
+    <source_key>1</source_key>
+    <sink_key>1</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_complex_to_real_0</source_block_id>
@@ -5106,12 +5234,6 @@
     <sink_block_id>audio_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>1</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_null_source_0</source_block_id>
-    <sink_block_id>audio_sink_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>3</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_packed_to_unpacked_xx_0</source_block_id>
