@@ -1,5 +1,6 @@
 function [f,A,snr] = yeest(x, Q)
-%Estimate f, A and phi for a real sinusoid
+% function [f,A,snr] = yeest(x, Q)
+% Estimate f, A and phi for a real sinusoid
 % x = abs(A)*cos( 2*pi*f*t + angle(A) ) + w
 % where w is Gaussian with variance sigma^2 and
 % SNR = abs(A)^2/(2*sigma^2)

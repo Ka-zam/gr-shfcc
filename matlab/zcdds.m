@@ -1,11 +1,14 @@
-function out = crossing(x,level)
+function out = zcdds( x , f_ref , f_out )
 
-if nargin == 2
-    x = x - level;
-end
+% function out = zcdds(x , f_ref , f_out )
+% Generate frequency with DDS from a given reference and ratio
+
 
 %Pre-allocate for speed
-out = zeros( ceil(length(x)*.5) , 1 );
+out = zeros( length(x) , 1 );
+
+start_pha = 0;
+out_pha_inc = 2*pi*f_out;
 idx = 1;
 
 for ii=1:length(x)-1
@@ -17,6 +20,7 @@ for ii=1:length(x)-1
         out(idx) = ii - x(ii)/( x(ii+1) - x(ii) );
         idx = idx + 1;
     end
+    
 end
 
 if idx > 1

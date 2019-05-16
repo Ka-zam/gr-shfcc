@@ -11,6 +11,7 @@ out = zeros( length(x)-calc_len-1 , 1 );
 
 n=1;
 while n <= length(out)
-    out(n) = yeest( x( n : n + calc_len ) , Q );
+    tmp = yeest( x( n : n + calc_len ) , Q );
+    out(n) = tmp(2);
     n = n + 1;
 end

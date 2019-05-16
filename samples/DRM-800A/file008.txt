@@ -5,4 +5,4 @@ SPS 10
 FS 96000
 Pilot -1.5j ; 1.5 every 32 symbols
 
-Channel 2 has 12kHz sine
+Channel 2 has 9600 Hz sine
