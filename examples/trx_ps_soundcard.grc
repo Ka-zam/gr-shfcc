@@ -284,7 +284,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>6</value>
+      <value>2</value>
     </param>
   </block>
   <block>
@@ -2166,11 +2166,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file08.wav</value>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file009.wav</value>
     </param>
     <param>
       <key>_coordinate</key>
