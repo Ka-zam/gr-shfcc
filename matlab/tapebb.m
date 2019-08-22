@@ -55,6 +55,14 @@ rf = real(bb.*carrier);
 noise = .5*10^( -input.snr*.1 )*randn(  length(rf) , 1 );
 rf = rf + noise;
 
+%Channel
+%if input.applychannel
+%    droop_db = input.channeldroop;
+%    BFIR = fir2(24,[linspace(0,.25,7) .3 1],...
+%        [ linspace(1,10^(droop_db*.05),7) 10^(droop_db*.05) 10^(droop_db*.05) ]);
+%    rf = filter(BFIR,1,rf);
+%end
+
 %Save for output
 rf_out = rf;
 

@@ -22,7 +22,7 @@ function varargout = cartim(varargin)
 
 % Edit the above text to modify the response to help cartim
 
-% Last Modified by GUIDE v2.5 11-Apr-2019 13:31:50
+% Last Modified by GUIDE v2.5 22-Aug-2019 10:31:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -201,11 +201,13 @@ cstr{5} = ['EVM         : ' ];
 cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
 
 %Change sps according to SRO
-sps =  (1-get(handles.sl_cfo,'Value')*.01)*input.sps;
+sps =  1/(1+get(handles.sl_cfo,'Value')*.01)*input.sps;
 
 cstr{7} = ['SPS         : ' num2str( sps , '%5.3f' ) ];
 
 cstr{4} = ['FDW         : ' num2str( input.fdw , '%5.3f' ) ];
+cstr{8} = ['PWR         : ' num2str( 0 , '%5.3f' ) ];
+
 
 set(handles.txt_data,'String',cstr);
 set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
@@ -215,6 +217,10 @@ set(handles.uipanel2,'Title',['Fs: ' num2str(input.fs/1e3) ' kHz']);
 % Data Selection
 if isfield(handles,'meabb') && get(handles.rb_measured,'Value')
     rf = handles.meabb(:);
+    %%% CHANNEL
+    %BFIR = fir2(12,[linspace(0,.25,7) .3 1],[linspace(1,2.,7) 1 1]);
+    %rf = filter(BFIR,1,rf);
+    %%%%%%%%%%%
     rf_tmp = rf; %Save for later
     t = linspace(0,(length(rf)-1)/input.fs,length(rf))';
     rf = hilbert( rf );
@@ -251,6 +257,10 @@ Nsym = min( [Nsym floor( (length(bb)-input.sps*input.rrcspan)/input.sps) ] );
 idx = [ input.rrcspan*input.sps+1 : sps :...
     input.sps*( input.rrcspan + Nsym ) ]';
 intbb = interp1( i , bb , idx );
+%Now we have baseband so print power
+
+cstr{8} = ['PWR         : ' num2str( sum(intbb.*conj(intbb))/length(intbb) , '%6.4f' ) ];
+set(handles.txt_data,'String',cstr);
 
 lim1 = get(handles.axes1,{'xlim','ylim'});  % Get axes limits.
 
@@ -327,10 +337,11 @@ if strcmp( get(handles.tb_time_freq,'String') , 'Time' )
     if get(handles.cb_keep_zoom,'Value') > 0.0
         set(handles.axes3,{'xlim','ylim'},lim3);
     end  
-elseif false
-    [pxx,w]= pwelch(rf(idx(1):idx(end)),[],[],[],96,'centered');
+elseif strcmp( get(handles.tb_time_freq,'String') , 'Freq' )
+    %[pxx,w]= pwelch(rf(idx(1):idx(end)),[],[],[],96,'centered');
+    [pxx,w]= pwelch(rf,[],[],[],96,'onesided');
     plot(handles.axes3, w, 10*log10(pxx) );
-    xlim(handles.axes3, [-48 48])
+    xlim(handles.axes3, [0 48])
     grid(handles.axes3, 'on')
 else
     %Early Late
@@ -667,7 +678,7 @@ if get(handles.sl_tau,'Value') > sps
     set(handles.txt_tau,'String' , str );
 end
 set(handles.sl_tau,'Max',sps);
-set(handles.sl_tau,'SliderStep',[.05/sps  1./sps ]);
+set(handles.sl_tau,'SliderStep',[.05/sps  .5/sps ]);
 
 guidata(hObject, handles);
 myplot(handles);
@@ -816,3 +827,35 @@ function pb_auto_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 myplot(handles,'auto')
+
+
+% --- Executes on button press in cb_applychannel.
+function cb_applychannel_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_applychannel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of cb_applychannel
+
+
+
+function ed_droop_Callback(hObject, eventdata, handles)
+% hObject    handle to ed_droop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ed_droop as text
+%        str2double(get(hObject,'String')) returns contents of ed_droop as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function ed_droop_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ed_droop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
