@@ -36,6 +36,7 @@ for k=1:length(symbols_hat)
     [~,idx] = min( tmp );
     evm(k) = abs( symbols_hat(k) - input.constellation(idx)  );
 end
-evm = evm/length(evm);
 
-err = err + 1j*sum(evm)/sum(abs(input.constellation));
+const_mean_pwr = mean(abs(input.constellation));
+
+err = err + 1j*mean(evm)/const_mean_pwr*100;
