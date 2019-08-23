@@ -5,8 +5,7 @@ if nargin == 0
     input.sps = 8;
     input.beta = .2;
     input.tau = 0;
-    input.amp = 1;
-    input.phi = 0;
+    input.rot = 1+0*1j;
     input.constellation = [ [1+1j -1+1j -1-1j 1-1j]/sqrt(2) 1.5j 1.5 ];
     input.fs = 96000.;
     epsilon = input;

@@ -14,7 +14,8 @@ t = linspace(0,(length(rf)-1)/input.fs,length(rf))';
 rf = hilbert( rf );
 carrier = exp(-1j*(2*pi*fc_hat*t));
 bb = rf.*carrier;
-bb = bb*input.amp*exp(1j*input.phi);
+%bb = bb*input.amp*exp(1j*input.phi);
+bb = bb*input.rot;
 
 %Filter
 Brrc = rcosdesign( input.beta , rrcspan(input.beta) , input.sps , 'sqrt');
