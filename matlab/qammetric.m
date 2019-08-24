@@ -1,6 +1,7 @@
 function [err,symbols_hat] = qammetric( rf , eps , tau , input )
 
 rf=rf(:);
+eps = eps/1000.; % eps in permille
 fc_hat  = input.fc*(1+eps);
 sps_hat = input.sps/(1+eps); 
 %input.beta 
@@ -30,12 +31,13 @@ err = sum(symbols_hat.*conj(symbols_hat))/length(symbols_hat);
 %Compute EVM
 evm = zeros( size(symbols_hat) );
 
+all_symbols =  [input.constellation input.pilotsymbols ];
 for k=1:length(symbols_hat)
     % ML decode
-    tmp = input.constellation - symbols_hat(k);
+    tmp = all_symbols - symbols_hat(k);
     tmp = tmp.*conj(tmp);
     [~,idx] = min( tmp );
-    evm(k) = abs( symbols_hat(k) - input.constellation(idx)  );
+    evm(k) = abs( symbols_hat(k) - all_symbols(idx)  );
 end
 
 const_mean_pwr = mean(abs(input.constellation));

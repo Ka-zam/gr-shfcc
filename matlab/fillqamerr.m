@@ -1,12 +1,26 @@
 function [epsilon,tau,err] = fillqamerr( x, E , T , input )
 
 if nargin == 0
+    x = 16;
+    FLAG = 1;
+end
+
+if nargin == 1 || exist('FLAG','var')
     input.fc = 6000.;
     input.sps = 8;
     input.beta = .2;
     input.tau = 0;
+    input.eps = 0;
     input.rot = 1+0*1j;
-    input.constellation = [ [1+1j -1+1j -1-1j 1-1j]/sqrt(2) 1.5j 1.5 ];
+    %input.constellation = [ [1+1j -1+1j -1-1j 1-1j]/sqrt(2) 1.5j 1.5 ];
+    %GNU Radio style constellation points
+    % np.sum(np.abs(c))/len(c) == 1.0
+    M = x;
+    c = qammod([0:M-1],M,'UnitAveragePower',false);
+    c = c/( sum(abs(c))/length(c) );
+    input.constellation = c;
+    input.pilotsymbols = sqrt(2);
+    input.pilotperiod = 6;
     input.fs = 96000.;
     epsilon = input;
     return

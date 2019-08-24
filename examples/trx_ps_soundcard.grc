@@ -101,7 +101,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1504, 76)</value>
+      <value>(104, 276)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -218,7 +218,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1504, 148)</value>
+      <value>(104, 348)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -245,7 +245,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1592, 148)</value>
+      <value>(192, 348)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -257,7 +257,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>samp_rate/sps*my_con.bits_per_symbol()</value>
+      <value>samp_rate/sps*my_con.bits_per_symbol()*(1.-1./pilot_period)</value>
     </param>
   </block>
   <block>
@@ -284,7 +284,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>6</value>
     </param>
   </block>
   <block>
@@ -452,7 +452,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1680, 76)</value>
+      <value>(280, 276)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -479,7 +479,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1592, 76)</value>
+      <value>(192, 276)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -725,7 +725,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>32</value>
+      <value>6</value>
     </param>
   </block>
   <block>
@@ -752,7 +752,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0-1j*1.5</value>
+      <value>np.sqrt(2)</value>
     </param>
   </block>
   <block>
@@ -798,7 +798,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(88, 228)</value>
+      <value>(632, 20)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -903,7 +903,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>numpy.append(tmp , (pilot_symbol1,pilot_symbol2) )</value>
+      <value>numpy.append(tmp , pilot_symbol1 )</value>
     </param>
   </block>
   <block>
@@ -1032,7 +1032,7 @@
     </param>
     <param>
       <key>max</key>
-      <value>256</value>
+      <value>2**bits_per_symbol</value>
     </param>
     <param>
       <key>minoutbuf</key>
@@ -1240,7 +1240,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1104, 168)</value>
+      <value>(1224, 232)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1911,7 +1911,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(864, 164)</value>
+      <value>(984, 228)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2084,7 +2084,7 @@
     </param>
     <param>
       <key>vector</key>
-      <value>2**bits_per_symbol,2**bits_per_symbol+1</value>
+      <value>2**bits_per_symbol</value>
     </param>
   </block>
   <block>
@@ -2166,11 +2166,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file014.wav</value>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file015.wav</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2794,7 +2794,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1552, 20)</value>
+      <value>(152, 220)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3459,11 +3459,11 @@
     <key>qtgui_freq_sink_x</key>
     <param>
       <key>autoscale</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>average</key>
-      <value>1.0</value>
+      <value>0.1</value>
     </param>
     <param>
       <key>axislabels</key>
@@ -3499,7 +3499,7 @@
     </param>
     <param>
       <key>fftsize</key>
-      <value>1024</value>
+      <value>2048</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -4701,7 +4701,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(480, 164)</value>
+      <value>(656, 228)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -4728,7 +4728,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1272, 164)</value>
+      <value>(1392, 228)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -4755,7 +4755,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1104, 228)</value>
+      <value>(1224, 292)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -4863,7 +4863,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(672, 164)</value>
+      <value>(792, 228)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -5106,7 +5106,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(168, 164)</value>
+      <value>(432, 228)</value>
     </param>
     <param>
       <key>_rotation</key>

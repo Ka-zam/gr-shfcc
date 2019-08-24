@@ -1,0 +1,11 @@
+64-QAM
+EXBW 0.200
+FC 7500
+SPS 8
+FS 96000
+Pilot  ( 1.4142,0j)  every 6 symbols
+
+Channel 2 has 12.0kHz sine
+
+-5dB level
+
