@@ -137,7 +137,7 @@ end
 % Input
 input.fs = 96e3;
 input.fup = str2double( get(handles.ed_fup,'String') );
-input.fdw = input.fup*(1 + .01*get(handles.sl_cfo,'Value'));
+input.fdw = input.fup*(1 + get(handles.sl_cfo,'Value')/1000);
 
 
 order = handles.order;
@@ -201,7 +201,7 @@ cstr{5} = ['EVM         : ' ];
 cstr{6} = ['RRC#        : ' num2str(input.sps*input.rrcspan+1) ];
 
 %Change sps according to SRO
-sps =  1/(1+get(handles.sl_cfo,'Value')*.01)*input.sps;
+sps =  1/(1+get(handles.sl_cfo,'Value')/1000)*input.sps;
 
 cstr{7} = ['SPS         : ' num2str( sps , '%5.3f' ) ];
 
@@ -417,7 +417,7 @@ function sl_cfo_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-str = ['Carrier Deviation: ' num2str( get(hObject,'Value') , '%4.2f' ) ' %' ];
+str = ['Epsilon: ' num2str( get(hObject,'Value') , '%4.2f' ) ];
 set(handles.txt_cfo,'String',str);
 myplot(handles);
 
@@ -782,6 +782,9 @@ function rb_measured_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of rb_measured
+%if get(hObject,'Value') > 0
+    myplot(handles);
+%end
 
 
 % --- Executes on button press in tb_const.

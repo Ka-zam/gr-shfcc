@@ -59,12 +59,12 @@ vars_min = fminsearch( @(vars) wrap_qam_err(vars,x,input) ,  [eps_hat tau_hat am
 
 out_est(1) = vars_min(1);
 out_est(2) = vars_min(2);
-out_est(3) = vars_min(3);
-out_est(4) = vars_min(4);
+out_est(3) = vars_min(3)*exp(1j*vars_min(4)*pi/180);
 
-input.rot = vars_min(3)*exp(1j*vars_min(4)*pi/180);
+input.rot = out_est(3);
 
-[~,symbols_hat] = qammetric( x , vars_min(1) , vars_min(2) , input );
+[tmp,symbols_hat] = qammetric( x , vars_min(1) , vars_min(2) , input );
+out_est(4) = tmp;
 
 function evm = wrap_qam_err( vars , x , input )
 eps = vars(1);

@@ -21,7 +21,7 @@ bb = bb*input.rot;
 %Filter
 Brrc = rcosdesign( input.beta , rrcspan(input.beta) , input.sps , 'sqrt');
 bb = filter( Brrc , 1/sum(Brrc) , bb );
-bb = bb( floor(length(Brrc)) : end );
+bb = bb( floor(length(Brrc)*.5) : end );
 
 %Get symbols
 symbols_hat = interp1( bb , [1+tau : sps_hat : length(bb) ] );

@@ -1,0 +1,11 @@
+16-QAM
+EXBW 0.200
+FC 3700
+SPS 16
+FS 96000
+Pilot  ( 1.5,0j)  every 4 symbols
+
+Channel 2 has 6.0kHz sine (low amp)
+
+-7dB level
+
