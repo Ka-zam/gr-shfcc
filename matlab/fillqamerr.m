@@ -9,20 +9,28 @@ if nargin == 1 || exist('FLAG','var')
     input.fc = 6000.;
     input.sps = 8;
     input.beta = .2;
-    input.tau = 0;
-    input.eps = 0;
-    input.rot = 1+0*1j;
-    %input.constellation = [ [1+1j -1+1j -1-1j 1-1j]/sqrt(2) 1.5j 1.5 ];
+    input.filtered = false;
     %GNU Radio style constellation points
     % np.sum(np.abs(c))/len(c) == 1.0
     M = x;
     c = qammod([0:M-1],M,'UnitAveragePower',false);
     c = c/( sum(abs(c))/length(c) );
     input.constellation = c;
-    input.pilotsymbols = sqrt(2);
-    input.pilotperiod = 6;
+    input.pilotsymbol = sqrt(2);
+    input.pilotperiod = 8;
     input.fs = 96000.;
     epsilon = input;
+    
+    %Filters
+    input.rrc = rcosdesign( input.beta , rrcspan(input.beta) , input.sps , 'sqrt');
+    input.rrc = input.rrc/sum(input.rrc);
+    input.rrc_rf = input.rrc.*exp(1j*[0:length(input.rrc)-1]*2*pi*(input.fc/input.fc));
+    
+    %Data    
+    input.rf = [];
+    input.rf_filt = [];
+    
+    
     return
 end
 
