@@ -284,7 +284,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>6</value>
     </param>
   </block>
   <block>
@@ -502,7 +502,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>3700</value>
+      <value>6000</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -725,7 +725,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>8</value>
     </param>
   </block>
   <block>
@@ -876,7 +876,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>16</value>
+      <value>10</value>
     </param>
   </block>
   <block>
@@ -1052,7 +1052,7 @@
     </param>
     <param>
       <key>repeat</key>
-      <value>True</value>
+      <value>False</value>
     </param>
   </block>
   <block>
@@ -2264,7 +2264,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file017.wav</value>
+      <value>/home/magnus/src/gr-shfcc/samples/DRM-800A/file019.wav</value>
     </param>
     <param>
       <key>_coordinate</key>
