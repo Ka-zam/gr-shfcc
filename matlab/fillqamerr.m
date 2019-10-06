@@ -19,7 +19,6 @@ if nargin == 1 || exist('FLAG','var')
     input.pilotsymbol = sqrt(2);
     input.pilotperiod = 8;
     input.fs = 96000.;
-    epsilon = input;
     
     %Filters
     input.rrc = rcosdesign( input.beta , rrcspan(input.beta) , input.sps , 'sqrt');
@@ -30,7 +29,7 @@ if nargin == 1 || exist('FLAG','var')
     input.rf = [];
     input.rf_filt = [];
     
-    
+    epsilon = input;    
     return
 end
 

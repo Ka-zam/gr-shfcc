@@ -74,7 +74,7 @@ err(2) = mean(evm)/const_mean_pwr*100;
 
 %Pilot EVM
 pdist = abs(symbols_hat - in.pilotsymbol);
-[pdist,idx] = sort(pdist);
+[~,idx] = sort(pdist);
 idx = mod( idx , in.pilotperiod );
 idx_start = idx(1);
 if idx_start == 0
