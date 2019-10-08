@@ -1,17 +1,16 @@
-function pha_diff = phasediff(x1,x2, N)
+function out = phasediff(x1,x2, ALG)
 % function pha_diff = phasediff(x1,x2,N)
 % Compute phase difference between the periodic signals
 if nargin < 3
-    N = -1;
+    ALG = 1;
 end
 
-
-xc = xcorr(x1,x2);
-if N < 0
+if ALG == 1
+    xc = xcorr(x1,x2);
     idx = length(x1);
-    %[~,idx] = max(abs(xc))
-else
-    idx = N;
+    out = angle(xc(idx));
+elseif ALG == 2
+    break;
+elseif ALG == 3
+    break;
 end
-
-pha_diff= angle(xc(idx));
