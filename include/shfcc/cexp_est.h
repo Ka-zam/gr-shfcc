@@ -32,11 +32,10 @@ namespace gr {
        * class. shfcc::cexp_est::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float fs = 1.f , int calc_len = 16 );
+      static sptr make(float fs = 1.f , int calc_len = 16, int algo = 1, int iter = 2, float freq_scale = 1.e-3);          
+      virtual void set_calc_len(size_t calc_len) = 0;
     };
 
   } // namespace shfcc
 } // namespace gr
-
 #endif /* INCLUDED_SHFCC_CEXP_EST_H */
-

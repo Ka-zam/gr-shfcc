@@ -4,7 +4,8 @@
   <key>shfcc_cexp_est</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
-  <make>shfcc.cexp_est($fs, $calc_len)</make>
+  <make>shfcc.cexp_est($fs, $calc_len, $algo, $iter, $freq_scale)</make>
+  <callback>set_calc_len($calc_len)</callback>
 
   <param>
     <name>Sampling rate</name>
@@ -14,11 +15,38 @@
   </param>
 
   <param>
-    <name>Calulation Length</name>
+    <name>Calculation Length</name>
     <key>calc_len</key>
     <value>16</value>
     <type>int</type>
   </param>
+
+  <param>
+    <name>Algorithm</name>
+    <key>algo</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Iterations</name>
+    <key>iter</key>
+    <value>2</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Freq scale</name>
+    <key>freq_scale</key>
+    <value>1.0e-3</value>
+    <type>float</type>
+  </param>
+
+  <check>2 >= $algo</check>
+  <check>$algo >= 1</check>  
+
+  <check>4 >= $iter</check>
+  <check>$iter >= 1</check>  
 
   <sink>
     <name>in</name>
@@ -33,5 +61,9 @@
     <name>amplitude</name>
     <type>complex</type>
   </source>  
-
+  <source>
+    <name>snr</name>
+    <type>float</type>
+    <optional>1</optional>
+  </source> 
 </block>
