@@ -51,6 +51,11 @@ namespace gr {
      */
     sine_est_impl::~sine_est_impl()
     {
+      delete d_fft;     
+      volk_free( d_cpx_data );
+      volk_free( d_cpx_datb );
+      volk_free( d_cpx_datc );
+      volk_free( d_flt_data );            
     }
 
     void
@@ -77,15 +82,27 @@ namespace gr {
     }    
 
     void
-    mean(gr_complex* m, gr_complex* vec, int len)
+    mean(gr_complex* mean, gr_complex* vec, int len)
     {
-    	*m = gr_complex(0.f,0.f);
+    	*mean = gr_complex(0.f,0.f);
     	for (int i = 0; i < len; ++i)
     	{
-    		*m += vec[i];
+    		*mean += vec[i];
     	}
-    	*m /= (float) len;
+    	*mean /= len;
     	return;
+    }
+
+    void
+    var(float* var, float* vec, int len)
+    {
+      *var = 0.f;
+      for (int i = 0; i < len; ++i)
+      {
+        *var += vec[i]*vec[i];
+      }
+      *var /= len;
+      return;
     }
 
     void 
@@ -94,7 +111,6 @@ namespace gr {
       //Constants
       constexpr float NEGTWOPI  =  -6.2831853071795862f;
       constexpr float NEGFOURPI = -12.5663706143591725f;
-
       //Local data
       uint16_t idx_us;
       int32_t idx;
@@ -103,8 +119,6 @@ namespace gr {
       gr_complex alpha;
       gr_complex Xp05, Xn05, Lp05, Ln05, Sp05, Sn05;
       float delta;
-
-
       /*
       Init parameters
       */
@@ -147,31 +161,37 @@ namespace gr {
 	      pha_inc = exp(gr_complex(0.f, NEGTWOPI/d_calc_len*( idx + delta + 0.5f )));
 	      volk_32fc_s32fc_x2_rotator_32fc(d_cpx_datb, d_cpx_datc , pha_inc, &pha, d_calc_len);
 	      // d_cpx_datb = in.*exp(-1j*2*pi/N*(m+delta+0.5)*[0:d_calc_len-1])
-/*
-      for (int i = 0; i < d_calc_len; ++i)
-      {
-      	fprintf(stderr, "Xp05[%d]: %9.3f+j%9.3f\n", i , real(d_cpx_datb[i]), imag(d_cpx_datb[i]));
-      }
-      */
-      
+        /*
+        for (int i = 0; i < d_calc_len; ++i)
+        {
+        	fprintf(stderr, "Xp05[%d]: %9.3f+j%9.3f\n", i , real(d_cpx_datb[i]), imag(d_cpx_datb[i]));
+        }
+        */
+        /*      
 	      Xp05 = gr_complex(0.f,0.f);
 	      for (int i = 0; i < d_calc_len; ++i)
 	      {
 	      	Xp05 += d_cpx_datb[i];
 	      }
 	      Xp05 /= (float) d_calc_len;
+        */
+        mean(&Xp05, d_cpx_datb, d_calc_len);
       	//fprintf(stderr, "Xp05: %9.3f+j%9.3f\n",  real(Xp05), imag(Xp05));
 
 	      pha     = gr_complex(1.f,0.f);
 	      pha_inc = exp(gr_complex(0.f, NEGTWOPI/d_calc_len*( idx + delta - 0.5f )));
 	      volk_32fc_s32fc_x2_rotator_32fc(d_cpx_data, d_cpx_datc, pha_inc, &pha, d_calc_len);
 	      // d_cpx_data = in.*exp(-1j*2*pi/N*(m+delta-0.5)*[0:d_calc_len-1])
+        /*
 	      Xn05 = gr_complex(0.f,0.f);
 	      for (int i = 0; i < d_calc_len; ++i)
 	      {
 	      	Xn05 += d_cpx_data[i];
 	      }
 	      Xn05 /= (float) d_calc_len;
+        */
+        mean(&Xn05, d_cpx_data, d_calc_len);
+
       	//fprintf(stderr, "Xn05: %9.3f+j%9.3f\n",  real(Xn05), imag(Xn05));
 
 	      Lp05 = conj(*amplitude)*( 1.f + exp(gr_complex(0.f, NEGFOURPI*delta)) )/
@@ -209,13 +229,11 @@ namespace gr {
 
 	      alpha -= conj(*amplitude)*( 1.f - exp(gr_complex(0.f,NEGFOURPI*delta)))/
 	      	( 1.f - exp(gr_complex( 0.f, NEGFOURPI/d_calc_len*(idx+delta) )));
-
 	      *amplitude = alpha/( (float) d_calc_len );
       }
       *amplitude *= 2.f;
- //fprintf(stderr, "freq: %f\n", (idx+delta)/d_calc_len);
-
-      *freq = (idx + delta)/( (float) d_calc_len);
+      //fprintf(stderr, "freq: %f\n", (idx+delta)/d_calc_len);
+      *freq = (idx + delta)/( (float) d_calc_len );
       return;
     }    
 
@@ -226,30 +244,18 @@ namespace gr {
       float sig_pwr;
       float nse_pwr = 0.f;
 
-      /*
-      Use d_cpx_data for reconstructed signal
-      */
-      //gr_complex pha_inc = gr_complex( std::cos(2.f*M_PI*(*freq)), std::sin(2.f*M_PI*(*freq)) ) ;
-      //gr_complex pha_inc = std::exp( gr_complex( 0.f , 2.f*M_PI*(*freq) ) );
       const float pha_inc  = TWOPI*(*freq);
       const float A_hat = abs(*amplitude);
-      float pha = arg(*amplitude);
+      float phi_hat = arg(*amplitude);
 
-      //gr_complex _pha = *amplitude;
-      /*
-      drop temporary phase after done, rotate unity vector
-      */
-      //volk_32fc_s32fc_x2_rotator_32fc(d_cpx_data, d_cpx_ones, pha_inc, &_pha, d_calc_len);
-      /*
-      d_cpx_data = A_hat * exp( 1j*2*pi*f_hat )
-      */
       for (int i = 0; i < d_calc_len; ++i)
       {
-        d_flt_data[i] = A_hat*cos(pha) - in_data[i];
-      	pha += pha_inc;
+        d_flt_data[i] = A_hat*cos(phi_hat) - in_data[i];
+      	phi_hat += pha_inc;
+        if (phi_hat > TWOPI) { phi_hat -= TWOPI; }
       }
       /*
-      d_cpx_data = X_hat(k) - X(k)
+      d_flt_data = X_hat(k) - X(k)
       */      
 
       /*
@@ -257,16 +263,16 @@ namespace gr {
       */
       sig_pwr = A_hat*A_hat*.5f;
       //fprintf(stderr, "sig_pwr: %9.3f\n", sig_pwr);
-
+      /*
       for (int i = 0; i < d_calc_len; ++i)
       {
         nse_pwr += d_flt_data[i]*d_flt_data[i];
       }
-      //nse_pwr /= .5f*(d_calc_len - 1);
-      nse_pwr /= .5f*(d_calc_len - 0);
+      nse_pwr /= 1.0f*d_calc_len;
+      */
+      var(&nse_pwr,d_flt_data,d_calc_len);
       //fprintf(stderr, "nse_pwr: %9.3f\n", nse_pwr);
-
-      *snr = 10.f*(std::log10(sig_pwr) - std::log10(nse_pwr));
+      *snr = 10.f*(log10(sig_pwr) - log10(nse_pwr));
       return;
     }    
 
@@ -296,11 +302,8 @@ namespace gr {
         /*
         snr_est needs the fractional frequency
         */
-        snr_est( out3+i, &freq_tmp, out2+i,  in + i*d_calc_len );
-        //*(out3+i) = 12.34f; //SNR
-        
+        snr_est( out3+i, &freq_tmp, out2+i,  in + i*d_calc_len );        
         //fprintf(stderr, "snr: %f\n", *(out3+i) );
-        
       }      
 
       return noutput_items;
