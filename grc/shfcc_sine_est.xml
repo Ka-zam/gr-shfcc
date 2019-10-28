@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<block>
+  <name>Sine Parameter Est.</name>
+  <key>shfcc_sine_est</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.sine_est($fs, $calc_len, $alg, $iters, $freq_scale)</make>
+  <callback>set_calc_len($calc_len)</callback>
+
+  <param>
+    <name>Sampling rate</name>
+    <key>fs</key>
+    <value>samp_rate</value>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Calculation Length</name>
+    <key>calc_len</key>
+    <value>calc_len</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Algorithm</name>
+    <key>alg</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Iterations</name>
+    <key>iters</key>
+    <value>2</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Freq scale</name>
+    <key>freq_scale</key>
+    <value>1.0</value>
+    <type>float</type>
+  </param>
+
+  <check>2 >= $alg</check>
+  <check>$alg >= 1</check>  
+
+  <check>4 >= $iters</check>
+  <check>$iters >= 1</check>  
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>freq</name>
+    <type>float</type>
+  </source>  
+  <source>
+    <name>amplitude</name>
+    <type>complex</type>
+  </source>  
+  <source>
+    <name>snr</name>
+    <type>float</type>
+    <optional>1</optional>
+  </source> 
+</block>

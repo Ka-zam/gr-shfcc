@@ -49,3 +49,4 @@ GR_ADD_TEST(qa_map_ss ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_map_ss
 GR_ADD_TEST(qa_cexp_est ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_cexp_est.py)
 GR_ADD_TEST(qa_tape_speed_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tape_speed_ff.py)
 GR_ADD_TEST(qa_vaverage_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_vaverage_ff.py)
+GR_ADD_TEST(qa_sine_est ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_sine_est.py)
