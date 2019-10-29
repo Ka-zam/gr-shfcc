@@ -90,6 +90,105 @@
     </param>
   </block>
   <block>
+    <key>variable_qtgui_chooser</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(280, 524)</value>
+    </param>
+    <param>
+      <key>gui_hint</key>
+      <value>0,0,1,1</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>PRI_CH</value>
+    </param>
+    <param>
+      <key>label0</key>
+      <value>Left</value>
+    </param>
+    <param>
+      <key>label1</key>
+      <value>Right</value>
+    </param>
+    <param>
+      <key>label2</key>
+      <value></value>
+    </param>
+    <param>
+      <key>label3</key>
+      <value></value>
+    </param>
+    <param>
+      <key>label4</key>
+      <value></value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>Measurement channel</value>
+    </param>
+    <param>
+      <key>labels</key>
+      <value>[]</value>
+    </param>
+    <param>
+      <key>num_opts</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>option0</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>option1</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>option2</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>option3</key>
+      <value>3</value>
+    </param>
+    <param>
+      <key>option4</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>options</key>
+      <value>[0, 1, 2]</value>
+    </param>
+    <param>
+      <key>orient</key>
+      <value>Qt.QVBoxLayout</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>int</value>
+    </param>
+    <param>
+      <key>widget</key>
+      <value>combo_box</value>
+    </param>
+  </block>
+  <block>
     <key>variable</key>
     <param>
       <key>comment</key>
@@ -168,7 +267,7 @@
     </param>
     <param>
       <key>stop</key>
-      <value>1024</value>
+      <value>2048</value>
     </param>
     <param>
       <key>rangeType</key>
@@ -223,7 +322,7 @@
     </param>
     <param>
       <key>start</key>
-      <value>-20</value>
+      <value>0</value>
     </param>
     <param>
       <key>step</key>
@@ -231,7 +330,7 @@
     </param>
     <param>
       <key>stop</key>
-      <value>20</value>
+      <value>30</value>
     </param>
     <param>
       <key>rangeType</key>
@@ -290,7 +389,7 @@
     </param>
     <param>
       <key>step</key>
-      <value>.5</value>
+      <value>.1</value>
     </param>
     <param>
       <key>stop</key>
@@ -450,11 +549,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(72, 572)</value>
+      <value>(4, 904)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>90</value>
     </param>
     <param>
       <key>id</key>
@@ -509,7 +608,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(280, 696)</value>
+      <value>(304, 696)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -674,6 +773,108 @@
     </param>
   </block>
   <block>
+    <key>blocks_multiply_const_vxx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>const</key>
+      <value>not PRI_CH</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(96, 756)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_multiply_const_vxx_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_multiply_const_vxx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>const</key>
+      <value>PRI_CH</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(96, 804)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_multiply_const_vxx_0_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_multiply_const_xx</key>
     <param>
       <key>alias</key>
@@ -685,7 +886,7 @@
     </param>
     <param>
       <key>const</key>
-      <value>10**((gui_comp+gui_bal)*.1)</value>
+      <value>10**((gui_comp+PRI_CH*gui_bal)*.1)</value>
     </param>
     <param>
       <key>affinity</key>
@@ -736,7 +937,7 @@
     </param>
     <param>
       <key>const</key>
-      <value>10**((gui_comp-gui_bal)*.1)</value>
+      <value>10**((gui_comp+(not PRI_CH)*gui_bal)*.1)</value>
     </param>
     <param>
       <key>affinity</key>
@@ -901,11 +1102,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(80, 840)</value>
+      <value>(96, 696)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>90</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -1011,7 +1212,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(656, 140)</value>
+      <value>(688, 140)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -2557,9 +2758,15 @@
   </block>
   <connection>
     <source_block_id>analog_sig_source_x_0</source_block_id>
-    <sink_block_id>audio_sink_0</sink_block_id>
+    <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
     <source_key>0</source_key>
-    <sink_key>3</sink_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>analog_sig_source_x_0</source_block_id>
+    <sink_block_id>blocks_multiply_const_vxx_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>audio_source_0</source_block_id>
@@ -2584,6 +2791,18 @@
     <sink_block_id>blocks_nlog10_ff_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_multiply_const_vxx_0</source_block_id>
+    <sink_block_id>audio_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>2</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_multiply_const_vxx_0_0</source_block_id>
+    <sink_block_id>audio_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>3</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_multiply_const_xx_0</source_block_id>
@@ -2644,12 +2863,6 @@
     <sink_block_id>audio_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>1</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_null_source_0</source_block_id>
-    <sink_block_id>audio_sink_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>2</sink_key>
   </connection>
   <connection>
     <source_block_id>shfcc_sine_est_0</source_block_id>
