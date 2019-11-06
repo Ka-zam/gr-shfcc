@@ -101,7 +101,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(96, 300)</value>
+      <value>(104, 300)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -347,7 +347,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>6</value>
     </param>
   </block>
   <block>
@@ -820,7 +820,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>7100</value>
+      <value>3550</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -1187,7 +1187,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>32</value>
+      <value>8</value>
     </param>
   </block>
   <block>
@@ -1440,7 +1440,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>8</value>
+      <value>16</value>
     </param>
   </block>
   <block>
@@ -1467,7 +1467,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>numpy.append(tmp , (pilot_symbol1,pilot_symbol2) )</value>
+      <value>numpy.append(tmp ,pilot_symbol2 )</value>
     </param>
   </block>
   <block>
@@ -1765,7 +1765,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1812,7 +1812,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2526,7 +2526,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2726,7 +2726,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2773,7 +2773,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2832,7 +2832,7 @@
     </param>
     <param>
       <key>endianness</key>
-      <value>gr.GR_MSB_FIRST</value>
+      <value>gr.GR_LSB_FIRST</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3008,7 +3008,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3099,7 +3099,7 @@
     </param>
     <param>
       <key>vector</key>
-      <value>2**bits_per_symbol,2**bits_per_symbol+1</value>
+      <value>2**bits_per_symbol</value>
     </param>
   </block>
   <block>
