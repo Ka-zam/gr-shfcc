@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<block>
+  <name>ncosest_fc</name>
+  <key>shfcc_ncosest_fc</key>
+  <category>[shfcc]</category>
+  <import>import shfcc</import>
+  <make>shfcc.ncosest_fc($fs, $freqs, $nfreqs, $eps_abs, $Neps, $calc_len)</make>
+  <param>
+    <name>Sampling rate</name>
+    <key>fs</key>
+    <value>samp_rate</value>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Expected frequencies</name>
+    <key>freqs</key>
+    <value>[1000 2000]</value>
+    <type>real_vector</type>
+  </param>
+
+  <param>
+    <name>No frequencies</name>
+    <key>nfreqs</key>
+    <value>2</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Calculation Length</name>
+    <key>calc_len</key>
+    <value>128</value>
+    <type>int</type>
+  </param>
+
+  <check>$nfreqs &gt; 0</check>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>freq</name>
+    <type>real_vector</type>
+    <vlen>2</vlen>
+  </source>  
+
+  <source>
+    <name>amplitude</name>
+    <type>complex_vector</type>
+    <vlen>2</vlen>
+  </source>  
+
+</block>

@@ -24,5 +24,6 @@ install(FILES
     shfcc_cexp_est.xml
     shfcc_tape_speed_ff.xml
     shfcc_vaverage_ff.xml
-    shfcc_sine_est.xml DESTINATION share/gnuradio/grc/blocks
+    shfcc_sine_est.xml
+    shfcc_ncosest_fc.xml DESTINATION share/gnuradio/grc/blocks
 )

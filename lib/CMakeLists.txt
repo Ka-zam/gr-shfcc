@@ -32,7 +32,8 @@ list(APPEND shfcc_sources
     cexp_est_impl.cc
     tape_speed_ff_impl.cc
     vaverage_ff_impl.cc
-    sine_est_impl.cc )
+    sine_est_impl.cc
+    ncosest_fc_impl.cc )
 
 set(shfcc_sources "${shfcc_sources}" PARENT_SCOPE)
 if(NOT shfcc_sources)

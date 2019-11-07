@@ -29,5 +29,6 @@ install(FILES
     cexp_est.h
     tape_speed_ff.h
     vaverage_ff.h
-    sine_est.h DESTINATION include/shfcc
+    sine_est.h
+    ncosest_fc.h DESTINATION include/shfcc
 )

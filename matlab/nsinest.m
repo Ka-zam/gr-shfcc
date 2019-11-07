@@ -38,48 +38,49 @@ end
 
 [~,i]=max(err);
 [~,beta_hat]=freqerr2(x,f1*(1+eps(i)) , r);
+fprintf("Eps_max: %5.3f\n",eps(i));
 
 for k=1:length(beta_hat)
-    fprintf("Amp: %9.3f  Phase: %9.3f\n",abs(beta_hat(k)),angle(beta_hat(k))*180/pi )
+    fprintf("Amp: %9.3f  Phase: %9.3f\n",abs(beta_hat(k)),angle(beta_hat(k))*180/pi );
 end
 beta=beta_hat;
 
+% 
+% function e = amperr(fap,x,eps)
+% x=x(:);
+% a=a(:)';
+% f=f(:)';
+% p=p(:)';
+% 
+% t = (0:numel(x)-1)';
+% p = p/180*pi;
+% 
+% s = sum(a.*cos(eps*freq.*(2*pi*t+p)),2);
+% e = sum((x-s).^2);
 
-function e = amperr(fap,x,eps)
-x=x(:);
-a=a(:)';
-f=f(:)';
-p=p(:)';
-
-t = (0:numel(x)-1)';
-p = p/180*pi;
-
-s = sum(a.*cos(eps*freq.*(2*pi*t+p)),2);
-e = sum((x-s).^2);
-
-function e = freqerr0(x,f)
+function [e,beta] = freqerr0(x,f)
+%Potentially different frequencies
 w = 2*pi*f;
-
 Nx = length(x);
 Nf = length(f);
-B = repmat( (1:Nx)' , 1 , Nf );
-%B = repmat( (0:Nx-1)' , 1 , Nf );
+B = repmat( (0:Nx-1)' , 1 , Nf );
 B = 1j*B.*w;
 B = exp(B);
-e = x'*B*inv(B'*B)*B'*x;
+e = x'*B*( (B'*B)\(B'*x) );
+if nargout == 2
+    beta = (B'*B)\(B'*x);
+end
 
 function e = freqerr1(x,f)
+%For real signals
 w = 2*pi*f;
-w=upsample(w,2);
 
 Nx = length(x);
 Nf = length(f);
-B = repmat( (1:Nx)' , 1 , 2*Nf );
-B(:,2) = -B(:,2);
-B(:,4) = -B(:,4);
-B = 1j*B.*w;
-B = exp(B);
-e = x'*B*inv(B'*B)*B'*x;
+B = repmat( (0:Nx-1)' , 1 , Nf );
+B = B.*w;
+B = cos(B);
+e = x'*B*( (B'*B)\(B'*x) );
 
 function [e,beta] = freqerr2(x,f1,r)
 % For known relations between frequencies 

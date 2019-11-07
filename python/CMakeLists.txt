@@ -50,3 +50,4 @@ GR_ADD_TEST(qa_cexp_est ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_cexp
 GR_ADD_TEST(qa_tape_speed_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tape_speed_ff.py)
 GR_ADD_TEST(qa_vaverage_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_vaverage_ff.py)
 GR_ADD_TEST(qa_sine_est ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_sine_est.py)
+GR_ADD_TEST(qa_ncosest_fc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ncosest_fc.py)

@@ -15,6 +15,7 @@
 #include "shfcc/tape_speed_ff.h"
 #include "shfcc/vaverage_ff.h"
 #include "shfcc/sine_est.h"
+#include "shfcc/ncosest_fc.h"
 %}
 
 
@@ -33,3 +34,5 @@ GR_SWIG_BLOCK_MAGIC2(shfcc, tape_speed_ff);
 GR_SWIG_BLOCK_MAGIC2(shfcc, vaverage_ff);
 %include "shfcc/sine_est.h"
 GR_SWIG_BLOCK_MAGIC2(shfcc, sine_est);
+%include "shfcc/ncosest_fc.h"
+GR_SWIG_BLOCK_MAGIC2(shfcc, ncosest_fc);
