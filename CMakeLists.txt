@@ -135,6 +135,13 @@ endif(APPLE)
 ########################################################################
 find_package(CppUnit)
 find_package(Doxygen)
+find_package(Armadillo "7.300")
+if (ARMADILLO_FOUND)
+    include_directories(${ARMADILLO_INCLUDE_DIRS})
+    message(STATUS "Armadillo found")
+else ()
+    message(FATAL_ERROR "Armadillo required to compile sapp")
+endif ()
 
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all

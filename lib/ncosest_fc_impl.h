@@ -12,7 +12,12 @@
 #define INCLUDED_SHFCC_NCOSEST_FC_IMPL_H
 
 #include <shfcc/ncosest_fc.h>
+#include <volk/volk.h>
+#include <iostream>
+#include <armadillo>
 
+using namespace std;
+using namespace arma;
 namespace gr {
   namespace shfcc {
 
@@ -22,9 +27,16 @@ namespace gr {
      	float d_fs;
      	int d_nfreqs;
      	int d_calc_len;
+     	int d_last_max_idx;
+     	int d_neps;
+     	vector<float> d_freqs;
+     	vector<float> d_eps;
+   		void linspace(vector<float> &v, const float min_val, const float max_val, const int steps);
+   		void calc_error(float &err, const float* in, const vector<float> &freqs);
 
      public:
-      ncosest_fc_impl(float fs, std::vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len);
+      ncosest_fc_impl(float fs, vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len);
+
       ~ncosest_fc_impl();
 
       int work(int noutput_items,

@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <block>
-  <name>ncosest_fc</name>
+  <name>N cos</name>
   <key>shfcc_ncosest_fc</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
-  <make>shfcc.ncosest_fc($fs, $freqs, $nfreqs, $eps_abs, $Neps, $calc_len)</make>
+  <make>shfcc.ncosest_fc($fs, $freqs, $nfreqs, $eps_abs, $neps, $calc_len)</make>
+
   <param>
     <name>Sampling rate</name>
     <key>fs</key>
@@ -15,7 +16,7 @@
   <param>
     <name>Expected frequencies</name>
     <key>freqs</key>
-    <value>[1000 2000]</value>
+    <value>[1000, 2000]</value>
     <type>real_vector</type>
   </param>
 
@@ -27,6 +28,20 @@
   </param>
 
   <param>
+    <name>Eps abs</name>
+    <key>eps_abs</key>
+    <value>.01</value>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Neps</name>
+    <key>neps</key>
+    <value>11</value>
+    <type>int</type>
+  </param>  
+
+  <param>
     <name>Calculation Length</name>
     <key>calc_len</key>
     <value>128</value>
@@ -34,6 +49,7 @@
   </param>
 
   <check>$nfreqs &gt; 0</check>
+  <check>$neps &gt; 0</check>
 
   <sink>
     <name>in</name>
@@ -42,14 +58,14 @@
 
   <source>
     <name>freq</name>
-    <type>real_vector</type>
-    <vlen>2</vlen>
+    <type>float</type>
+    <vlen>$nfreqs</vlen>
   </source>  
 
   <source>
     <name>amplitude</name>
-    <type>complex_vector</type>
-    <vlen>2</vlen>
+    <type>complex</type>
+    <vlen>$nfreqs</vlen>
   </source>  
 
 </block>
