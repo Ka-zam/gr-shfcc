@@ -19,7 +19,7 @@ namespace gr {
   namespace shfcc {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Estimate parameters of N real cosines in AWGN channel
      * \ingroup shfcc
      *
      */
@@ -36,7 +36,7 @@ namespace gr {
        * class. shfcc::ncosest_fc::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float fs, std::vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len);
+      static sptr make(float fs, std::vector<float> freqs, float eps_abs, int Neps, int calc_len);
     };
 
   } // namespace shfcc

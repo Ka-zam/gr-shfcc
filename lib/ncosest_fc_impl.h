@@ -33,9 +33,11 @@ namespace gr {
      	fcolvec d_eps;
    		void linspace(fcolvec &v, const float min_val, const float max_val);
    		float calc_error(const float* in, const frowvec &freqs);
+   		float argmax_interp_p(const fcolvec &x, const fcolvec &y);
+   		void amp_est(cx_fcolvec &amp, const float* in, const float eps);
 
      public:
-      ncosest_fc_impl(float fs, vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len);
+      ncosest_fc_impl(float fs, vector<float> freqs, float eps_abs, int Neps, int calc_len);
 
       ~ncosest_fc_impl();
 

@@ -19,42 +19,43 @@ namespace gr {
   namespace shfcc {
 
     ncosest_fc::sptr
-    ncosest_fc::make(float fs, std::vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len)
+    ncosest_fc::make(float fs, std::vector<float> freqs, float eps_abs, int Neps, int calc_len)
     {
       return gnuradio::get_initial_sptr
-        (new ncosest_fc_impl(fs, freqs, nfreqs, eps_abs, Neps, calc_len));
+        (new ncosest_fc_impl(fs, freqs, eps_abs, Neps, calc_len));
     }
 
     /*
      * The private constructor
      */
-    ncosest_fc_impl::ncosest_fc_impl(float fs, std::vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len)
+    ncosest_fc_impl::ncosest_fc_impl(float fs, std::vector<float> freqs, float eps_abs, int Neps, int calc_len)
       : gr::sync_decimator("ncosest_fc",
               gr::io_signature::make(1, 1, sizeof(float) ),
-              gr::io_signature::make2(2, 2, sizeof(float)*nfreqs, sizeof(gr_complex)*nfreqs ), 
+              gr::io_signature::make2(2, 2, sizeof(float)*freqs.size(), sizeof(gr_complex)*freqs.size() ), 
               calc_len)
     {
-    	d_fs = fs;
-    	d_nfreqs = 2*nfreqs;
-    	d_calc_len = calc_len;
-    	d_neps = Neps;
+        d_fs = fs;
+        //cout << "Size of freqs " << freqs.size() << endl;
+        d_nfreqs = 2*freqs.size();
+        d_calc_len = calc_len;
+        d_neps = Neps;
 
-    	d_freqs.zeros(d_nfreqs);
-    	for (int i = 0; i < d_freqs.size(); ++i)
-    	{
-    		if(i%2==0)
-    		{
-    			d_freqs(i) = freqs[i/2];
-    		}
-    		else
-    		{
-    			d_freqs(i) = -d_freqs(i-1);
-    		}
-    		//fprintf(stderr, "d_freqs[%d]: %9.3f\n", i, d_freqs(i) );
-    	}
-      d_eps.set_size(d_neps);
-    	linspace(d_eps, -eps_abs, eps_abs);
-      cout << "d_eps\n" << d_eps;
+        d_freqs.zeros(d_nfreqs);
+        for (int i = 0; i < d_freqs.size(); ++i)
+        {
+            if(i%2==0)
+            {
+                d_freqs(i) = freqs[i/2];
+            }
+            else
+            {
+                d_freqs(i) = -d_freqs(i-1);
+            }
+            //fprintf(stderr, "d_freqs[%d]: %9.3f\n", i, d_freqs(i) );
+        }
+        d_eps.set_size(d_neps);
+        linspace(d_eps, -eps_abs, eps_abs);
+        //cout << "d_eps\n" << d_eps.t();
     }
 
     /*
@@ -68,7 +69,7 @@ namespace gr {
     ncosest_fc_impl::linspace(fcolvec &v, const float min_val, const float max_val)
     {
       int N = v.size();
-      cout << "N\n" << N;
+      //cout << "N: " << N << endl;
       if (N==1) { v(0) = 0.5*(max_val+min_val); return;}
       if (N==2) { v(0) = min_val; v(1) = max_val; return;}
     	double step = (max_val-min_val)/(N-1);
@@ -81,11 +82,31 @@ namespace gr {
     }
 
     float
+    ncosest_fc_impl::argmax_interp_p(const fcolvec &x, const fcolvec &y)
+    {
+    	/*
+    	Return the critical argument xc minimizing or maximizing y[x]
+    	*/
+    	assert(x.n_rows == y.n_rows && x.n_rows > 2);
+    	uint32_t idx = y.index_max();
+    	//cout << "idx_max: " << idx << endl;
+    	if (idx == 0)        { return x(0); }
+    	if (idx == x.n_rows) { return x(x.n_rows);  }
+
+    	double a,b;
+    	a = ( x(idx+1)*(y(idx) - y(idx-1)) + x(idx)*(y(idx-1) - y(idx+1)) + 
+    		x(idx-1)*(y(idx+1) - y(idx)) );
+        b = ( x(idx+1)*x(idx+1)*(y(idx-1) - y(idx)) + x(idx)*x(idx)*(y(idx+1) - y(idx-1)) + 
+        	x(idx-1)*x(idx-1)*(y(idx) - y(idx+1)) );
+    	return -b/(2.*a);
+    }
+
+    float
     ncosest_fc_impl::calc_error(const float* in, const frowvec &freqs)
     {
     
-    	cx_fmat B(d_calc_len, d_nfreqs);
-    	frowvec omega;
+      cx_fmat B(d_calc_len, d_nfreqs);
+      frowvec omega;
 
       cx_fcolvec in_vec(d_calc_len);
       for (int i = 0; i < d_calc_len; ++i)
@@ -94,14 +115,8 @@ namespace gr {
       }
       //cout << "in_vec\n" << in_vec;
 
-      
-    	//for (int i = 0; i < d_nfreqs; ++i)
-    	//{
-    	//	omega(i) = freqs.at(i)*2.f*fdatum::pi;
-    	//}
-      
       omega = 2.f*fdatum::pi*freqs/d_fs;
-      cout << "omega\n" << omega;
+      //cout << "omega\n" << omega;
 
       //FIXME: Super naive
       for (int i = 0; i < d_nfreqs; ++i)
@@ -114,28 +129,40 @@ namespace gr {
         }
         B.col(i) = tmpcol;
       }
-      cout << "B\n" << B;
-      fmat tmp3(size(B));
-      tmp3 = real(B);
-      tmp3.save("Br.dat",raw_ascii);
-      tmp3 = imag(B);
-      tmp3.save("Bi.dat",raw_ascii);
 
-
-      cx_fmat tmp2(d_nfreqs,d_nfreqs);
-      cout << "size(tmp2)\n" << tmp2.n_rows << ", " << tmp2.n_cols << endl;
-      tmp2 = trans(B)*B;
-      //cout << "B.t()*B\n" << B.t()*B;
-      
-      //fcolvec in_vec(in, d_calc_len);
       cx_fmat tmp(1,1);
-      //tmp = (in_vec.t()*B) * (inv(B.t()*B))* (B.t()*in_vec) ;
-      tmp(0,0) = 23.f;
+      tmp = (in_vec.t()*B) * (inv(B.t()*B))* (B.t()*in_vec) ;
       return real(tmp(0,0));
-    	//return 0.f;
     }
 
+    void
+    ncosest_fc_impl::amp_est(cx_fcolvec &amp, const float* in, const float eps)
+    {
+      cx_fmat B(d_calc_len, d_nfreqs);
+      frowvec omega;
+      cx_fcolvec in_vec(d_calc_len);
 
+      omega = 2.f*fdatum::pi*d_freqs.t()/d_fs*(1.f+eps);
+
+      for (int i = 0; i < d_calc_len; ++i)
+      {
+        in_vec(i) = gr_complex( in[i] , 0.f );
+      }
+
+      for (int i = 0; i < d_nfreqs; ++i)
+      {
+        cx_fcolvec tmpcol(d_calc_len);
+        
+        for (int k = 0; k < d_calc_len; ++k)
+        {
+          tmpcol(k) = exp( gr_complex(0.f, k*omega(i)) );
+        }
+        B.col(i) = tmpcol;
+      }
+
+      amp = 2.f*inv(B.t()*B)*B.t()*in_vec;
+      return;
+    }
 
     int
     ncosest_fc_impl::work(int noutput_items,
@@ -145,9 +172,6 @@ namespace gr {
       const float  *in   = (const float*) input_items[0];
       float        *out0 = (float*)       output_items[0];
       gr_complex   *out1 = (gr_complex*)  output_items[1];
-
-      //fprintf(stderr, "NOI: %d\n", noutput_items);
-      //fprintf(stderr, "d_nfreqs: %d\n", d_nfreqs);
       
       for (int i = 0; i < noutput_items; ++i)
       {
@@ -157,32 +181,23 @@ namespace gr {
         {
           frowvec freqs(d_nfreqs,fill::ones);
           freqs = d_freqs.t()*( 1.f + d_eps(k) );
-          cout << freqs;
-          //cout << "d_eps\n" << d_eps;
+          //cout << freqs;
           err_vec(k) = calc_error(in, freqs);
-          
         }
 
-        cout << err_vec;
-        
-        /*
-      	for (int n = 0; n < d_nfreqs; ++n)
-      	{
-      		//out0[i*d_nfreqs  ] = 0.f;
-      		//fprintf(stderr, "idx:%d\n", i*d_nfreqs+n);
-
-      		//out0[i*d_nfreqs+n] = 1.f;
-      		out0[i*d_nfreqs + n] = mean( in, d_calc_len);
-
-      		//out1[i*d_nfreqs  ] = gr_complex(1.f,1.f);
-      		out1[i*d_nfreqs+n] = gr_complex(1.f,1.f);
-      		//out1[i*d_nfreqs + n] = gr_complex(1.f,0.f);
-      	}
-        */
+        //cout << "err_vec\n"<< err_vec.t() << endl;
+        float eps_max = argmax_interp_p(d_eps,err_vec);
+        cx_fcolvec amps(d_nfreqs);
+        amp_est(amps, in, eps_max);
+        //cout << "idx_max: "<<  eps_max << endl;
+        for (int n = 0; n < d_nfreqs; n+=2)
+        {
+        	//cout << d_freqs(n)*(1+eps_max) << endl;
+        	out0[i*d_nfreqs/2+n/2] = d_freqs(n)*(1+eps_max);            
+            out1[i*d_nfreqs/2+n/2] = amps(n);
+        }
       	in += d_calc_len;
       }
-      
-      
       return noutput_items;
     }
 
