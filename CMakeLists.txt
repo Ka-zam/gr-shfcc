@@ -143,10 +143,19 @@ else ()
     message(FATAL_ERROR "Armadillo required to compile sapp")
 endif ()
 
-find_package(LAPACK)
+find_package(BLAS REQUIRED)
+if(BLAS_FOUND)
+    message(STATUS "BLAS found")
+endif()
+
+find_package(LAPACK REQUIRED)
 if(LAPACK_FOUND)
     message(STATUS "LAPACK found")
 endif()
+message(STATUS "ARMADILLO libraries: ${ARMADILLO_LIBRARIES}")
+message(STATUS "LAPACK libraries: ${LAPACK_LIBRARIES}")
+message(STATUS "BLAS libraries: ${BLAS_LIBRARIES}")
+# include(Armadillo)
 
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all

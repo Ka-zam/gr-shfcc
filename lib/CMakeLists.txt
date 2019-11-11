@@ -42,7 +42,7 @@ if(NOT shfcc_sources)
 endif(NOT shfcc_sources)
 
 add_library(gnuradio-shfcc SHARED ${shfcc_sources})
-target_link_libraries(gnuradio-shfcc ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
+target_link_libraries(gnuradio-shfcc ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} ${ARMADILLO_LIBRARIES})
 set_target_properties(gnuradio-shfcc PROPERTIES DEFINE_SYMBOL "gnuradio_shfcc_EXPORTS")
 
 if(APPLE)
