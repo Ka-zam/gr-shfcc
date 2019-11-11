@@ -193,7 +193,9 @@ namespace gr {
         for (int n = 0; n < d_nfreqs; n+=2)
         {
         	//cout << d_freqs(n)*(1+eps_max) << endl;
-        	out0[i*d_nfreqs/2+n/2] = d_freqs(n)*(1+eps_max);            
+        	out0[i*d_nfreqs/2+n/2] = d_freqs(n)*(1+eps_max);
+            //cout << "amps[" << n/2 << "] = " << abs(amps(n)) << "  " << arg(amps(n))*180./fdatum::pi << endl;
+            //cout << "amps[" << n/2 << "] = " << real(amps(n)) << "  " << imag(amps(n)) << endl;
             out1[i*d_nfreqs/2+n/2] = amps(n);
         }
       	in += d_calc_len;
