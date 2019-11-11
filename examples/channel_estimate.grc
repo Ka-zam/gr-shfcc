@@ -2550,8 +2550,12 @@
       <value>True</value>
     </param>
     <param>
+      <key>est_freq</key>
+      <value>(PRI_CH is 0)</value>
+    </param>
+    <param>
       <key>freq_scale</key>
-      <value>1.0</value>
+      <value>1.e-3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2568,6 +2572,10 @@
     <param>
       <key>iters</key>
       <value>iters</value>
+    </param>
+    <param>
+      <key>known_freq</key>
+      <value>gui_fc</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -2609,8 +2617,12 @@
       <value>True</value>
     </param>
     <param>
+      <key>est_freq</key>
+      <value>(PRI_CH is 1)</value>
+    </param>
+    <param>
       <key>freq_scale</key>
-      <value>1.0</value>
+      <value>1.e-3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2627,6 +2639,10 @@
     <param>
       <key>iters</key>
       <value>iters</value>
+    </param>
+    <param>
+      <key>known_freq</key>
+      <value>gui_fc</value>
     </param>
     <param>
       <key>maxoutbuf</key>

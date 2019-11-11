@@ -66,7 +66,7 @@
     </param>
     <param>
       <key>run_options</key>
-      <value>prompt</value>
+      <value>run</value>
     </param>
     <param>
       <key>run</key>
@@ -90,6 +90,33 @@
     </param>
   </block>
   <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 372)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>Amp</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>1.23</value>
+    </param>
+  </block>
+  <block>
     <key>variable_qtgui_range</key>
     <param>
       <key>comment</key>
@@ -105,7 +132,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(16, 316)</value>
+      <value>(16, 460)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -164,7 +191,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(120, 236)</value>
+      <value>(16, 308)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -172,11 +199,11 @@
     </param>
     <param>
       <key>id</key>
-      <value>P_noise</value>
+      <value>SNR</value>
     </param>
     <param>
       <key>value</key>
-      <value>-40</value>
+      <value>23.4</value>
     </param>
   </block>
   <block>
@@ -222,7 +249,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(16, 444)</value>
+      <value>(16, 588)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -293,7 +320,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>64</value>
+      <value>128</value>
     </param>
   </block>
   <block>
@@ -354,7 +381,7 @@
     <key>analog_noise_source_x</key>
     <param>
       <key>amp</key>
-      <value>10**(P_noise*.05)</value>
+      <value>10**( -SNR*.05 )*(Amp/np.sqrt(2))</value>
     </param>
     <param>
       <key>alias</key>
@@ -402,14 +429,14 @@
     </param>
     <param>
       <key>seed</key>
-      <value>101610</value>
+      <value>int(time.time())</value>
     </param>
   </block>
   <block>
     <key>analog_sig_source_x</key>
     <param>
       <key>amp</key>
-      <value>2</value>
+      <value>Amp</value>
     </param>
     <param>
       <key>alias</key>
@@ -559,7 +586,7 @@
     </param>
     <param>
       <key>num_items</key>
-      <value>calc_len</value>
+      <value>calc_len*2</value>
     </param>
     <param>
       <key>type</key>
@@ -747,7 +774,38 @@
     </param>
     <param>
       <key>import</key>
-      <value>import numpy</value>
+      <value>import numpy as np</value>
+    </param>
+  </block>
+  <block>
+    <key>import</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(304, 12)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>import_0_0</value>
+    </param>
+    <param>
+      <key>import</key>
+      <value>import time</value>
     </param>
   </block>
   <block>
@@ -777,12 +835,16 @@
       <value>True</value>
     </param>
     <param>
+      <key>est_freq</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>freq_scale</key>
       <value>1.0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(616, 260)</value>
+      <value>(600, 164)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -795,6 +857,10 @@
     <param>
       <key>iters</key>
       <value>iterations</value>
+    </param>
+    <param>
+      <key>known_freq</key>
+      <value>samp_rate*.1</value>
     </param>
     <param>
       <key>maxoutbuf</key>

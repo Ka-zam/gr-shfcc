@@ -18,16 +18,16 @@ namespace gr {
   namespace shfcc {
 
     sine_est::sptr
-    sine_est::make(float fs, int calc_len, int alg, int iters, float freq_scale)
+    sine_est::make(float fs, bool est_freq, float known_freq, int calc_len, int alg, int iters, float freq_scale)
     {
       return gnuradio::get_initial_sptr
-        (new sine_est_impl(fs, calc_len, alg, iters, freq_scale));
+        (new sine_est_impl(fs, est_freq, known_freq, calc_len, alg, iters, freq_scale));
     }
 
     /*
      * The private constructor
      */
-    sine_est_impl::sine_est_impl(float fs, int calc_len, int alg, int iters, float freq_scale)
+    sine_est_impl::sine_est_impl(float fs, bool est_freq, float known_freq, int calc_len, int alg, int iters, float freq_scale)
       : gr::sync_decimator("sine_est",
               gr::io_signature::make(1, 1, sizeof(float)),
               gr::io_signature::make3(3, 3, sizeof(float), sizeof(gr_complex), sizeof(float) ),
@@ -38,6 +38,8 @@ namespace gr {
       d_calc_len = calc_len;
       d_algorithm = alg;
       d_iterations = iters;
+      d_est_freq = est_freq;
+      d_known_freq  = known_freq;
       d_alignment = volk_get_alignment();
       d_cpx_data = (gr_complex *) volk_malloc( d_calc_len*sizeof(gr_complex) , d_alignment );
       d_cpx_datb = (gr_complex *) volk_malloc( d_calc_len*sizeof(gr_complex) , d_alignment );
@@ -57,6 +59,22 @@ namespace gr {
       volk_free( d_cpx_datc );
       volk_free( d_flt_data );            
     }
+
+    void 
+    sine_est_impl::set_est_freq(bool estimate){
+      gr::thread::scoped_lock lock(d_mtx); 
+      d_est_freq = estimate;
+      return;
+    }
+
+    void 
+    sine_est_impl::set_known_freq(float freq){
+      gr::thread::scoped_lock lock(d_mtx); 
+      d_known_freq = freq;
+      return;
+    }
+
+
 
     void
     sine_est_impl::set_calc_len(size_t calc_len)
@@ -82,31 +100,43 @@ namespace gr {
     }    
 
     void
-    mean(gr_complex* mean, gr_complex* vec, int len)
+    mean(gr_complex* m, const gr_complex* vec, const int len)
     {
-    	*mean = gr_complex(0.f,0.f);
+    	*m = gr_complex(0.f,0.f);
     	for (int i = 0; i < len; ++i)
     	{
-    		*mean += vec[i];
+    		*m += vec[i];
     	}
-    	*mean /= len;
+    	*m /= len;
     	return;
     }
 
     void
-    var(float* var, float* vec, int len)
+    mean(float* m, const float* vec, const int len)
     {
-      *var = 0.f;
+      *m = 0.f;
       for (int i = 0; i < len; ++i)
       {
-        *var += vec[i]*vec[i];
+        *m += vec[i];
       }
-      *var /= len;
+      *m /= len;
+      return;
+    }    
+
+    void
+    var(float* v, const float* mean, const float* vec, const int len)
+    {
+      *v = 0.f;
+      for (int i = 0; i < len; ++i)
+      {
+        *v += ( vec[i] - (*mean) )*( vec[i] - (*mean) );
+      }
+      *v /= len;
       return;
     }
 
     void 
-    sine_est_impl::yeest(float *freq , gr_complex *amplitude , const float *in_data  )
+    sine_est_impl::ye_est(float *freq , gr_complex *amplitude , const float *in_data  )
     {
       //Constants
       constexpr float NEGTWOPI  =  -6.2831853071795862f;
@@ -126,6 +156,7 @@ namespace gr {
       {
         d_cpx_datc[i] = gr_complex(in_data[i],0.f);
       }
+      // d_cpx_datc = in[i] + 0*1j
       delta = 0.f;
       *amplitude = gr_complex(0.f,0.f);
       /*
@@ -167,14 +198,6 @@ namespace gr {
         	fprintf(stderr, "Xp05[%d]: %9.3f+j%9.3f\n", i , real(d_cpx_datb[i]), imag(d_cpx_datb[i]));
         }
         */
-        /*      
-	      Xp05 = gr_complex(0.f,0.f);
-	      for (int i = 0; i < d_calc_len; ++i)
-	      {
-	      	Xp05 += d_cpx_datb[i];
-	      }
-	      Xp05 /= (float) d_calc_len;
-        */
         mean(&Xp05, d_cpx_datb, d_calc_len);
       	//fprintf(stderr, "Xp05: %9.3f+j%9.3f\n",  real(Xp05), imag(Xp05));
 
@@ -182,16 +205,7 @@ namespace gr {
 	      pha_inc = exp(gr_complex(0.f, NEGTWOPI/d_calc_len*( idx + delta - 0.5f )));
 	      volk_32fc_s32fc_x2_rotator_32fc(d_cpx_data, d_cpx_datc, pha_inc, &pha, d_calc_len);
 	      // d_cpx_data = in.*exp(-1j*2*pi/N*(m+delta-0.5)*[0:d_calc_len-1])
-        /*
-	      Xn05 = gr_complex(0.f,0.f);
-	      for (int i = 0; i < d_calc_len; ++i)
-	      {
-	      	Xn05 += d_cpx_data[i];
-	      }
-	      Xn05 /= (float) d_calc_len;
-        */
         mean(&Xn05, d_cpx_data, d_calc_len);
-
       	//fprintf(stderr, "Xn05: %9.3f+j%9.3f\n",  real(Xn05), imag(Xn05));
 
 	      Lp05 = conj(*amplitude)*( 1.f + exp(gr_complex(0.f, NEGFOURPI*delta)) )/
@@ -229,18 +243,40 @@ namespace gr {
 
 	      alpha -= conj(*amplitude)*( 1.f - exp(gr_complex(0.f,NEGFOURPI*delta)))/
 	      	( 1.f - exp(gr_complex( 0.f, NEGFOURPI/d_calc_len*(idx+delta) )));
-	      *amplitude = alpha/( (float) d_calc_len );
+	      *amplitude = alpha/((float)d_calc_len);
       }
-      *amplitude *= 2.f;
       //fprintf(stderr, "freq: %f\n", (idx+delta)/d_calc_len);
-      *freq = (idx + delta)/( (float) d_calc_len );
+      *freq = (idx + delta)/d_calc_len;
+      *amplitude *= 2.f;
       return;
-    }    
+    }   
+
+    void 
+    sine_est_impl::amp_est(gr_complex *amplitude , const float *in_data  )
+    {
+      constexpr float NEGTWOPI = -6.2831853071795862f;   
+      /*
+      Init parameters
+      */
+      for (int i = 0; i < d_calc_len; ++i)
+      {
+        d_cpx_datc[i] = gr_complex(in_data[i],0.f);
+      }
+      // d_cpx_datc = in[i] + 0*1j
+      gr_complex pha     = gr_complex(1.f,0.f);
+      gr_complex pha_inc = exp( gr_complex(0.f, NEGTWOPI*(d_known_freq)/d_fs) );
+      volk_32fc_s32fc_x2_rotator_32fc(d_cpx_data, d_cpx_datc , pha_inc, &pha, d_calc_len);
+      // d_cpx_data = in[i]*exp(-1j*2*pi*f_hat*range(N))
+      mean(amplitude, d_cpx_data, d_calc_len);
+      *amplitude *= 2.f;
+      return;
+    }
+
 
     void
     sine_est_impl::snr_est(float *snr,  const float *freq, const gr_complex *amplitude, const float *in_data)
     {
-      constexpr float TWOPI  =  6.2831853071795862f;    	
+      constexpr float TWOPI = 6.2831853071795862f;    	
       float sig_pwr;
       float nse_pwr = 0.f;
 
@@ -270,7 +306,9 @@ namespace gr {
       }
       nse_pwr /= 1.0f*d_calc_len;
       */
-      var(&nse_pwr,d_flt_data,d_calc_len);
+      float m;
+      mean(&m, in_data, d_calc_len);
+      var(&nse_pwr, &m, d_flt_data, d_calc_len);
       //fprintf(stderr, "nse_pwr: %9.3f\n", nse_pwr);
       *snr = 10.f*(log10(sig_pwr) - log10(nse_pwr));
       return;
@@ -282,30 +320,57 @@ namespace gr {
         gr_vector_void_star &output_items)
     {
       gr::thread::scoped_lock lock(d_mtx);     	
-      const float *in   = (const float *) input_items[0];
-      float       *out1 = (float *)       output_items[0];
-      gr_complex  *out2 = (gr_complex *)  output_items[1];
-      float       *out3 = (float *)       output_items[2];
+      const float *in   = (const float *)  input_items[0];
+      float       *out0 = (float *)       output_items[0];
+      gr_complex  *out1 = (gr_complex *)  output_items[1];
 
       for (int i = 0; i < noutput_items; i++)
       {
-      	//fprintf(stderr, "%s\n", "");
-        yeest( out1+i, out2+i, in + i*d_calc_len );
-        float freq_tmp;
-        freq_tmp = *(out1+i); //Save for snr_est
-        *(out1+i) *= d_fscale; //Report fequency in scaled Hz
-        
-        //fprintf(stderr, "amp: %f ", std::abs(*(out2+i)) );
-        //fprintf(stderr, "pha: %f ", std::arg(*(out2+i)) );
-        //fprintf(stderr, "frq: %f ", *(out1+i) );
-        
-        /*
-        snr_est needs the fractional frequency
-        */
-        snr_est( out3+i, &freq_tmp, out2+i,  in + i*d_calc_len );        
-        //fprintf(stderr, "snr: %f\n", *(out3+i) );
-      }      
+        if(d_est_freq){
+        	//fprintf(stderr, "%s\n", "");
+          ye_est( out0+i, out1+i, in + i*d_calc_len );
+          float freq_tmp;
+          freq_tmp = *(out0+i); //Save for snr_est
+          *(out0+i) *= d_fscale; //Report fequency in scaled Hz
+          /*
+          fprintf(stderr, "%s\n", "Estimating frequency");     
+          fprintf(stderr, "amp: %9.3f ", std::abs(*(out1+i)) );
+          fprintf(stderr, "pha: %9.3f ", std::arg(*(out1+i)) );
+          fprintf(stderr, "frq: %9.3f ", *(out0+i) );
+          */
+          if (output_items.size()>=3){
+            /*
+            snr_est needs the fractional frequency
+            */
+            float *out2 = (float *) output_items[2];
+            snr_est( out2+i, &freq_tmp, out1+i,  in + i*d_calc_len );
+            /*
+            fprintf(stderr, "snr: %9.3f\n", *(out2+i) );
+            */
+          }
+        }
+        else{
+          *(out0+i) = d_known_freq*d_fscale/d_fs; //Report fequency in scaled Hz
 
+          /*
+          fprintf(stderr, "%s\n", "Known frequency");     
+          fprintf(stderr, "amp: %9.3f ", std::abs(*(out1+i)) );
+          fprintf(stderr, "pha: %9.3f ", std::arg(*(out1+i)) );
+          fprintf(stderr, "frq: %9.3f ", *(out0+i) );
+          */
+          amp_est(out1+i , in + i*d_calc_len );
+          
+          if(output_items.size()>=3){
+            float *out2 = (float *) output_items[2];
+            float freq;
+            freq = d_known_freq/d_fs;
+            snr_est( out2+i, &freq, out1+i, in + i*d_calc_len );
+            /*
+            fprintf(stderr, "snr: %9.3f\n", *(out2+i) );
+            */
+          }
+        }
+      }      
       return noutput_items;
     }
 

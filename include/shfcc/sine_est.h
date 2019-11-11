@@ -25,7 +25,7 @@ namespace gr {
   namespace shfcc {
 
     /*!
-     * \brief Estimate parameters from sinusoidal signal in AFGN channel
+     * \brief Estimate parameters from sinusoidal signal in AWGN channel
      * \ingroup shfcc
      *
      */
@@ -42,8 +42,10 @@ namespace gr {
        * class. shfcc::sine_est::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float fs, int calc_len, int alg, int iters, float freq_scale);
+      static sptr make(float fs, bool est_freq, float known_freq, int calc_len, int alg, int iters, float freq_scale);
       virtual void set_calc_len(size_t calc_len) = 0;
+      virtual void set_est_freq(bool estimate) = 0;
+      virtual void set_known_freq(float freq) = 0;
     };
 
   } // namespace shfcc

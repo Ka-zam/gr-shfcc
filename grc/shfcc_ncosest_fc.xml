@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>N cos</name>
+  <name>N cos est</name>
   <key>shfcc_ncosest_fc</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
@@ -31,7 +31,7 @@
     <name>Eps abs</name>
     <key>eps_abs</key>
     <value>.01</value>
-    <type>float</type>
+    <type>real</type>
   </param>
 
   <param>

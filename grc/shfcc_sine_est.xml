@@ -4,8 +4,10 @@
   <key>shfcc_sine_est</key>
   <category>[shfcc]</category>
   <import>import shfcc</import>
-  <make>shfcc.sine_est($fs, $calc_len, $alg, $iters, $freq_scale)</make>
+  <make>shfcc.sine_est( $fs, $est_freq, $known_freq, $calc_len, $alg, $iters, $freq_scale)</make>
   <callback>set_calc_len($calc_len)</callback>
+  <callback>set_est_freq($est_freq)</callback>
+  <callback>set_known_freq($known_freq)</callback>
 
   <param>
     <name>Sampling rate</name>
@@ -33,6 +35,19 @@
     <key>iters</key>
     <value>2</value>
     <type>int</type>
+  </param>
+
+    <param>
+    <name>Estimate frequency</name>
+    <key>est_freq</key>
+    <value>True</value>
+    <type>bool</type>
+  </param>
+
+  <param>
+    <name>Known frequency</name>
+    <key>known_freq</key>
+    <type>float</type>
   </param>
 
   <param>

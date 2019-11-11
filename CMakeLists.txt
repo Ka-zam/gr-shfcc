@@ -143,6 +143,11 @@ else ()
     message(FATAL_ERROR "Armadillo required to compile sapp")
 endif ()
 
+find_package(LAPACK)
+if(LAPACK_FOUND)
+    message(STATUS "LAPACK found")
+endif()
+
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all
 # caps such as FILTER or FFT) and change the version to the minimum

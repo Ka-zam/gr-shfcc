@@ -29,10 +29,10 @@ namespace gr {
      	int d_calc_len;
      	int d_last_max_idx;
      	int d_neps;
-     	vector<float> d_freqs;
-     	vector<float> d_eps;
-   		void linspace(vector<float> &v, const float min_val, const float max_val, const int steps);
-   		void calc_error(float &err, const float* in, const vector<float> &freqs);
+     	fcolvec d_freqs;
+     	fcolvec d_eps;
+   		void linspace(fcolvec &v, const float min_val, const float max_val);
+   		float calc_error(const float* in, const frowvec &freqs);
 
      public:
       ncosest_fc_impl(float fs, vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len);

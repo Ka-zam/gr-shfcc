@@ -2635,6 +2635,10 @@
       <value>True</value>
     </param>
     <param>
+      <key>est_freq</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>freq_scale</key>
       <value>1.0</value>
     </param>
@@ -2653,6 +2657,10 @@
     <param>
       <key>iters</key>
       <value>3</value>
+    </param>
+    <param>
+      <key>known_freq</key>
+      <value>1</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -2694,6 +2702,10 @@
       <value>True</value>
     </param>
     <param>
+      <key>est_freq</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>freq_scale</key>
       <value>1.0</value>
     </param>
@@ -2712,6 +2724,10 @@
     <param>
       <key>iters</key>
       <value>3</value>
+    </param>
+    <param>
+      <key>known_freq</key>
+      <value>1</value>
     </param>
     <param>
       <key>maxoutbuf</key>
