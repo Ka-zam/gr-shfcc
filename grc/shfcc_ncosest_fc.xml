@@ -61,4 +61,9 @@
     <vlen>len($freqs)</vlen>
   </source>  
 
+    <source>
+    <name>eps</name>
+    <type>float</type>
+  </source>  
+
 </block>

@@ -31,7 +31,7 @@ namespace gr {
     ncosest_fc_impl::ncosest_fc_impl(float fs, std::vector<float> freqs, float eps_abs, int Neps, int calc_len)
       : gr::sync_decimator("ncosest_fc",
               gr::io_signature::make(1, 1, sizeof(float) ),
-              gr::io_signature::make2(2, 2, sizeof(float)*freqs.size(), sizeof(gr_complex)*freqs.size() ), 
+              gr::io_signature::make3(3, 3, sizeof(float)*freqs.size(), sizeof(gr_complex)*freqs.size(), sizeof(float) ), 
               calc_len)
     {
         d_fs = fs;
@@ -72,45 +72,45 @@ namespace gr {
       //cout << "N: " << N << endl;
       if (N==1) { v(0) = 0.5*(max_val+min_val); return;}
       if (N==2) { v(0) = min_val; v(1) = max_val; return;}
-    	double step = (max_val-min_val)/(N-1);
-    	v(0) = min_val;
-    	for (int i = 1; i < v.size(); ++i)
-    	{
-    		v(i) = v(i-1) + step;
-    	}
-    	return;
+        double step = (max_val-min_val)/(N-1);
+        v(0) = min_val;
+        for (int i = 1; i < v.size(); ++i)
+        {
+            v(i) = v(i-1) + step;
+        }
+        return;
     }
 
     float
     ncosest_fc_impl::argmax_interp_p(const fcolvec &x, const fcolvec &y)
     {
-    	/*
-    	Return the critical argument xc minimizing or maximizing y[x]
-    	*/
-    	assert(x.n_rows == y.n_rows && x.n_rows > 2);
-    	uint32_t idx = y.index_max();
-    	//cout << "idx_max: " << idx << endl;
-    	if (idx == 0)        { return x(0); }
-    	if (idx == x.n_rows) { return x(x.n_rows);  }
+        /*
+        Return the critical argument xc minimizing or maximizing y[x]
+        */
+        assert(x.n_rows == y.n_rows && x.n_rows > 2);
+        uint32_t idx = y.index_max();
+        //cout << "idx_max: " << idx << endl;
+        if (idx == 0)        { return x(0); }
+        if (idx == x.n_rows) { return x(x.n_rows);  }
 
-    	double a,b;
-    	a = ( x(idx+1)*(y(idx) - y(idx-1)) + x(idx)*(y(idx-1) - y(idx+1)) + 
-    		x(idx-1)*(y(idx+1) - y(idx)) );
+        double a,b;
+        a = ( x(idx+1)*(y(idx) - y(idx-1)) + x(idx)*(y(idx-1) - y(idx+1)) + 
+            x(idx-1)*(y(idx+1) - y(idx)) );
         b = ( x(idx+1)*x(idx+1)*(y(idx-1) - y(idx)) + x(idx)*x(idx)*(y(idx+1) - y(idx-1)) + 
-        	x(idx-1)*x(idx-1)*(y(idx) - y(idx+1)) );
-    	return -b/(2.*a);
+            x(idx-1)*x(idx-1)*(y(idx) - y(idx+1)) );
+        return -b/(2.*a);
     }
 
     float
     ncosest_fc_impl::calc_error(const float* in, const frowvec &freqs)
-    {
-    
+    {   
       cx_fmat B(d_calc_len, d_nfreqs);
       frowvec omega;
 
       cx_fcolvec in_vec(d_calc_len);
       for (int i = 0; i < d_calc_len; ++i)
       {
+        assert(i<d_calc_len);
         in_vec(i) = gr_complex( in[i] , 0.f );
       }
       //cout << "in_vec\n" << in_vec;
@@ -131,7 +131,8 @@ namespace gr {
       }
 
       cx_fmat tmp(1,1);
-      tmp = (in_vec.t()*B) * (inv(B.t()*B))* (B.t()*in_vec) ;
+      tmp = (in_vec.t()*B) * (inv(B.t()*B))* (B.t()*in_vec);
+
       return real(tmp(0,0));
     }
 
@@ -172,7 +173,12 @@ namespace gr {
       const float  *in   = (const float*) input_items[0];
       float        *out0 = (float*)       output_items[0];
       gr_complex   *out1 = (gr_complex*)  output_items[1];
+      float        *out2 = (float*)       output_items[2];
+
+      int vlen = d_nfreqs/2;
       
+      auto start = std::chrono::high_resolution_clock::now();
+
       for (int i = 0; i < noutput_items; ++i)
       {
         
@@ -182,24 +188,32 @@ namespace gr {
           frowvec freqs(d_nfreqs,fill::ones);
           freqs = d_freqs.t()*( 1.f + d_eps(k) );
           //cout << freqs;
-          err_vec(k) = calc_error(in, freqs);
+          err_vec(k) = calc_error(in+i*d_calc_len, freqs);
+          //err_vec(k) = 1./(abs(d_eps(k))+1.);
         }
 
         //cout << "err_vec\n"<< err_vec.t() << endl;
         float eps_max = argmax_interp_p(d_eps,err_vec);
-        cx_fcolvec amps(d_nfreqs);
-        amp_est(amps, in, eps_max);
+        cx_fcolvec amps(d_nfreqs,fill::ones);
+        amp_est(amps, in+i*d_calc_len, eps_max);
+        
         //cout << "idx_max: "<<  eps_max << endl;
+        int nn = 0;
         for (int n = 0; n < d_nfreqs; n+=2)
         {
-        	//cout << d_freqs(n)*(1+eps_max) << endl;
-        	out0[i*d_nfreqs/2+n/2] = d_freqs(n)*(1+eps_max);
+            //cout << d_freqs(n)*(1+eps_max) << endl;
+            assert(nn<d_freqs.size());
+            out0[i*vlen+nn] = d_freqs(n)*(1.+eps_max);
             //cout << "amps[" << n/2 << "] = " << abs(amps(n)) << "  " << arg(amps(n))*180./fdatum::pi << endl;
             //cout << "amps[" << n/2 << "] = " << real(amps(n)) << "  " << imag(amps(n)) << endl;
-            out1[i*d_nfreqs/2+n/2] = amps(n);
+            out1[i*vlen+nn] = amps(n);
+            nn++;
         }
-      	in += d_calc_len;
+        *out2++ = eps_max*100.;
       }
+      auto elapsed = std::chrono::high_resolution_clock::now() - start;
+      long long us = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+      cout << "Did " << d_calc_len << " samples in " << us << " us." << d_calc_len/((float)us)*1.e3 << " Ksps"  << endl;
       return noutput_items;
     }
 

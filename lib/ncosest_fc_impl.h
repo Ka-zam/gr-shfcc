@@ -15,6 +15,7 @@
 #include <volk/volk.h>
 #include <iostream>
 #include <armadillo>
+#include <chrono>
 
 using namespace std;
 using namespace arma;
