@@ -266,7 +266,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>96</value>
+      <value>16</value>
     </param>
   </block>
   <block>
@@ -293,7 +293,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>[2123., 3456.]</value>
+      <value>[1000.,3000. ]</value>
     </param>
   </block>
   <block>
@@ -453,7 +453,7 @@
     <key>analog_noise_source_x</key>
     <param>
       <key>amp</key>
-      <value>10**(P_noise*.05)</value>
+      <value>10**(P_noise*.05)*0</value>
     </param>
     <param>
       <key>alias</key>
@@ -764,7 +764,7 @@
     </param>
     <param>
       <key>num_items</key>
-      <value>calc_len*5</value>
+      <value>calc_len</value>
     </param>
     <param>
       <key>type</key>
@@ -922,6 +922,53 @@
     <param>
       <key>vlen</key>
       <value>2</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_null_sink</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>bus_conns</key>
+      <value>[[0,],]</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(880, 392)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>float_null_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>num_inputs</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
     </param>
   </block>
   <block>
@@ -1281,7 +1328,7 @@
     </param>
     <param>
       <key>eps_abs</key>
-      <value>.02</value>
+      <value>.01</value>
     </param>
     <param>
       <key>freqs</key>
@@ -1309,7 +1356,7 @@
     </param>
     <param>
       <key>neps</key>
-      <value>11</value>
+      <value>3</value>
     </param>
     <param>
       <key>fs</key>
@@ -1495,6 +1542,12 @@
     <source_block_id>shfcc_ncosest_fc_0</source_block_id>
     <sink_block_id>cpx_null</sink_block_id>
     <source_key>1</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>shfcc_ncosest_fc_0</source_block_id>
+    <sink_block_id>float_null_0</sink_block_id>
+    <source_key>2</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>

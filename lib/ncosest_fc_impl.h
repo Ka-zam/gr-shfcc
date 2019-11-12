@@ -21,6 +21,20 @@ using namespace std;
 using namespace arma;
 namespace gr {
   namespace shfcc {
+  	class Timer
+	{
+	public:
+	    Timer() : beg_(clock_::now()) {}
+	    void reset() { beg_ = clock_::now(); }
+	    double elapsed() const { 
+	        return std::chrono::duration_cast<second_>
+	            (clock_::now() - beg_).count(); }
+
+	private:
+	    typedef std::chrono::high_resolution_clock clock_;
+	    typedef std::chrono::duration<double, std::ratio<1> > second_;
+	    std::chrono::time_point<clock_> beg_;
+	};
 
     class ncosest_fc_impl : public ncosest_fc
     {
@@ -32,10 +46,16 @@ namespace gr {
      	int d_neps;
      	fcolvec d_freqs;
      	fcolvec d_eps;
+        cx_fmat d_B_mat;
+
+        void init_B_mat();
+        void epsidx2span(span &s, const int idx);
    		void linspace(fcolvec &v, const float min_val, const float max_val);
    		float calc_error(const float* in, const frowvec &freqs);
+   		float calc_error2(const float* in, const int eps_idx);
    		float argmax_interp_p(const fcolvec &x, const fcolvec &y);
    		void amp_est(cx_fcolvec &amp, const float* in, const float eps);
+   		Timer d_tmr, d_tmr2;
 
      public:
       ncosest_fc_impl(float fs, vector<float> freqs, float eps_abs, int Neps, int calc_len);
