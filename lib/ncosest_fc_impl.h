@@ -54,7 +54,8 @@ namespace gr {
    		float calc_error(const float* in, const frowvec &freqs);
    		float calc_error2(const float* in, const int eps_idx);
    		float argmax_interp_p(const fcolvec &x, const fcolvec &y);
-   		void amp_est(cx_fcolvec &amp, const float* in, const float eps);
+      void amp_est(cx_fcolvec &amp, const float* in, const float eps);
+      void amp_est2(cx_fcolvec &amp, const float* in, const int eps_idx);
    		Timer d_tmr, d_tmr2;
 
      public:
