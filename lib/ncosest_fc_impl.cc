@@ -32,6 +32,7 @@ namespace gr {
       : gr::sync_decimator("ncosest_fc",
               gr::io_signature::make(1, 1, sizeof(float) ),
               gr::io_signature::make3(3, 3, sizeof(float)*freqs.size(), sizeof(gr_complex)*freqs.size(), sizeof(float) ), 
+//              gr::io_signature::make3(3, 3, sizeof(float)*freqs.size(), sizeof(gr_complex)*freqs.size(), sizeof(int) ), 
               calc_len)
     {
       //cout << "Armadillo version: " << arma_version::as_string() << endl;
@@ -54,6 +55,7 @@ namespace gr {
             }
             //fprintf(stderr, "d_freqs[%d]: %9.3f\n", i, d_freqs(i) );
         }
+        d_last_max_idx = -1;
         d_eps.set_size(d_neps);
         linspace(d_eps, -eps_abs, eps_abs);
         cout << "d_eps\n" << d_eps.t();
@@ -146,8 +148,8 @@ namespace gr {
         assert(x.n_rows == y.n_rows && x.n_rows > 2);
         uint32_t idx = y.index_max();
         //cout << "idx_max: " << idx << endl;
-        if (idx == 0)          { cout <<"OOPS0\n"; return x(0); }
-        if (idx == x.n_rows-1) { cout <<"OOPS1\n"; return x(x.n_rows-1);  }
+        if (idx == 0)          { return x(0); }
+        if (idx == x.n_rows-1) { return x(x.n_rows-1);  }
 
         double a,b;
         a = ( x(idx+1)*(y(idx) - y(idx-1)) + x(idx)*(y(idx-1) - y(idx+1)) + 
@@ -193,6 +195,8 @@ namespace gr {
     float
     ncosest_fc_impl::calc_error2(const float* in, const int eps_idx)
     {   
+      //if (eps_idx > d_neps-1) { eps_idx = d_neps-1;}
+      //if (eps_idx <        0) { eps_idx =        0;}
       fcolvec in_vec(in, d_calc_len);
       span s;
       epsidx2span(s, eps_idx);
@@ -240,25 +244,67 @@ namespace gr {
       const float  *in   = (const float*) input_items[0];
       float        *out0 = (float*)       output_items[0];
       gr_complex   *out1 = (gr_complex*)  output_items[1];
-      float        *out2 = (float*)       output_items[2];
+//      float        *out2 = (float*)       output_items[2];
+      int        *out2 = (int*)       output_items[2];
 
       int vlen = d_nfreqs/2;
       
       d_tmr.reset();
 
+        float eps_max;
       for (int i = 0; i < noutput_items; ++i)
       {
         fcolvec err_vec2(d_neps,fill::zeros);
+        /*
+        The naive approach
         for (int k = 0; k < d_neps; ++k)
         {
           err_vec2(k) = calc_error2(in+i*d_calc_len, k);
         }
+        */
 
-        float eps_max = argmax_interp_p(d_eps,err_vec2);
+        if (d_last_max_idx < 0) //Not locked
+        {
+          for (int k = 0; k < d_neps; ++k)
+          {
+            err_vec2(k) = calc_error2(in+i*d_calc_len, k);
+          }          
+          eps_max = argmax_interp_p(d_eps,err_vec2);
+        }
+        else
+        {
+          fcolvec eps(3),err(3);
+          err(2) = calc_error2(in+i*d_calc_len, d_last_max_idx);
+          while (true){
+            float left = calc_error2(in+i*d_calc_len,d_last_max_idx-1);
+            float right = calc_error2(in+i*d_calc_len,d_last_max_idx+1);
+            if (left > err(2)) //Peak is to the left 
+            {
+              d_last_max_idx -= 1;
+              err(3) = err(2);
+              err(2) = left;
+            }
+            else if (right > err(2))
+            {
+              d_last_max_idx += 1;
+              err(1) = err(2);
+              err(2) = right;
+            }
+            else //We're at the peak
+            {
+              err(1) = left;
+              err(3) = right;
+              eps = d_eps(span(d_last_max_idx-1,d_last_max_idx+1));
+              break;
+            }
+          }
+          eps_max = argmax_interp_p(eps,err);
+        }
+        
+
         cx_fcolvec amps(d_nfreqs,fill::ones);
         amp_est(amps, in+i*d_calc_len, eps_max);
         
-        //cout << "idx_max: "<<  eps_max << endl;
         int nn = 0;
         for (int n = 0; n < d_nfreqs; n+=2)
         {
@@ -268,12 +314,14 @@ namespace gr {
             nn++;
         }
         *out2++ = eps_max;
+        //*out2++ = err_vec2.index_max();
       }
 
       double s = d_tmr.elapsed();
       if(COUNT==1000){
         cout << "Did " << d_calc_len*noutput_items << " samples in " << s << " s. " 
           << d_calc_len*noutput_items/s*1.e-3 << " Ksps"  << endl;
+        cout << "eps_max: "<<  eps_max << endl;
         COUNT  = -1;
       }
       COUNT++;
