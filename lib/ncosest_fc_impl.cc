@@ -214,6 +214,8 @@ namespace gr {
       frowvec omega;
       fcolvec in_vec(in, d_calc_len);
 
+      if (eps < d_eps(0) || eps > d_eps(d_eps.n_rows-1) ) { return; }
+
       omega = 2.f*fdatum::pi*d_freqs.t()/d_fs*(1.f+eps);
 
       for (int i = 0; i < d_nfreqs; ++i)
@@ -353,7 +355,7 @@ namespace gr {
         for (int n = 0; n < d_nfreqs; n+=2)
         {
             assert(nn<d_freqs.size());
-            out0[i*vlen+nn] = d_freqs(n)*(1.+eps_max);
+            out0[i*vlen+nn] = d_freqs(n)*(1.+eps_max)*1e-3;
             out1[i*vlen+nn] = amps(n);
             nn++;
         }

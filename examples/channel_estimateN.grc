@@ -491,7 +491,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>11</value>
+      <value>21</value>
     </param>
   </block>
   <block>
@@ -545,7 +545,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>100</value>
+      <value>10</value>
     </param>
   </block>
   <block>
@@ -1004,7 +1004,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(928, 500)</value>
+      <value>(976, 580)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1233,6 +1233,57 @@
     <param>
       <key>vlen</key>
       <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_multiply_const_xx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>const</key>
+      <value>1.e-3</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(856, 108)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_multiply_const_xx_1</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>len(fvec)</value>
     </param>
   </block>
   <block>
@@ -3097,7 +3148,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1304, 204)</value>
+      <value>(1240, 148)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3368,7 +3419,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(872, 108)</value>
+      <value>(1072, 60)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3635,7 +3686,7 @@
     </param>
     <param>
       <key>eps_abs</key>
-      <value>.01</value>
+      <value>.02</value>
     </param>
     <param>
       <key>freqs</key>
@@ -3936,6 +3987,12 @@
     <sink_key>1</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_multiply_const_xx_1</source_block_id>
+    <sink_block_id>qtgui_vector_sink_f_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
     <source_block_id>blocks_nlog10_ff_0_0_0_0</source_block_id>
     <sink_block_id>qtgui_vector_sink_f_0</sink_block_id>
     <source_key>0</source_key>
@@ -4009,13 +4066,13 @@
   </connection>
   <connection>
     <source_block_id>shfcc_ncosest_fc_0</source_block_id>
-    <sink_block_id>blocks_null_sink_0</sink_block_id>
+    <sink_block_id>blocks_multiply_const_xx_1</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>shfcc_ncosest_fc_0</source_block_id>
-    <sink_block_id>qtgui_vector_sink_f_0_0</sink_block_id>
+    <sink_block_id>blocks_null_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
