@@ -197,6 +197,8 @@ namespace gr {
     {   
       //if (eps_idx > d_neps-1) { eps_idx = d_neps-1;}
       //if (eps_idx <        0) { eps_idx =        0;}
+      assert(eps_idx >= 0);
+      assert(eps_idx  < d_neps);
       fcolvec in_vec(in, d_calc_len);
       span s;
       epsidx2span(s, eps_idx);
@@ -244,14 +246,14 @@ namespace gr {
       const float  *in   = (const float*) input_items[0];
       float        *out0 = (float*)       output_items[0];
       gr_complex   *out1 = (gr_complex*)  output_items[1];
-//      float        *out2 = (float*)       output_items[2];
-      int        *out2 = (int*)       output_items[2];
+      float        *out2 = (float*)       output_items[2];
 
       int vlen = d_nfreqs/2;
       
       d_tmr.reset();
 
-        float eps_max;
+      float eps_max;
+
       for (int i = 0; i < noutput_items; ++i)
       {
         fcolvec err_vec2(d_neps,fill::zeros);
@@ -263,47 +265,89 @@ namespace gr {
         }
         */
 
-        if (d_last_max_idx < 0) //Not locked
+        if ( (d_last_max_idx <= 0) || (d_last_max_idx == d_neps-1) ) //Not locked
+        //if ( true ) //Not locked
         {
+          //fprintf(stderr, "%s\n", "Full search");
           for (int k = 0; k < d_neps; ++k)
           {
             err_vec2(k) = calc_error2(in+i*d_calc_len, k);
-          }          
+          }
+          d_last_max_idx = err_vec2.index_max();       
           eps_max = argmax_interp_p(d_eps,err_vec2);
+          //err_vec2.t().print("err_vec2=");
+          //fprintf(stderr, "Full search finish: %6.3f @ %d\n", eps_max*1e3, d_last_max_idx);
         }
         else
         {
-          fcolvec eps(3),err(3);
-          err(2) = calc_error2(in+i*d_calc_len, d_last_max_idx);
-          while (true){
-            float left = calc_error2(in+i*d_calc_len,d_last_max_idx-1);
-            float right = calc_error2(in+i*d_calc_len,d_last_max_idx+1);
-            if (left > err(2)) //Peak is to the left 
+          int cnt = 0;
+          fcolvec eps(3);
+          fcolvec err(3, fill::zeros);
+
+          assert(d_last_max_idx - 1 > 0);
+          assert(d_last_max_idx + 1 < d_neps);
+
+          /*
+          eps(0) = d_eps(d_last_max_idx - 1);
+          eps(1) = d_eps(d_last_max_idx);
+          eps(2) = d_eps(d_last_max_idx + 1);
+          */
+          eps = d_eps(span(d_last_max_idx-1,d_last_max_idx+1));
+
+          //fprintf(stderr, "%s%d\n", "Entering algo: ", d_last_max_idx);
+          err(0) = calc_error2(in+i*d_calc_len, d_last_max_idx-1);
+          err(1) = calc_error2(in+i*d_calc_len, d_last_max_idx);
+          err(2) = calc_error2(in+i*d_calc_len, d_last_max_idx+1);
+          //err.t().print("err=");
+          bool centered = false;
+          while(!centered)
+          {
+            if (err(0) > err(1)) //Peak is to the left 
             {
+              //fprintf(stderr, "L ");
               d_last_max_idx -= 1;
-              err(3) = err(2);
-              err(2) = left;
+              eps = d_eps(span(d_last_max_idx-1,d_last_max_idx+1));
+              err(2) = err(1);
+              err(1) = err(0);
+              assert(d_last_max_idx-1 > 0);
+              err(0) = calc_error2(in+i*d_calc_len, d_last_max_idx-1);
+              cnt++;
             }
-            else if (right > err(2))
-            {
+            else if (err(1) < err(2)) // Move right
+            { 
+              //fprintf(stderr, "R ");
               d_last_max_idx += 1;
+              eps = d_eps(span(d_last_max_idx-1,d_last_max_idx+1));
+              err(0) = err(1);
               err(1) = err(2);
-              err(2) = right;
+              assert(d_last_max_idx+1 < d_neps);
+              err(2) = calc_error2(in+i*d_calc_len, d_last_max_idx+1);
+              cnt++;
             }
             else //We're at the peak
             {
-              err(1) = left;
-              err(3) = right;
-              eps = d_eps(span(d_last_max_idx-1,d_last_max_idx+1));
-              break;
+              //fprintf(stderr, "C \n");
+              centered = true;
+            }
+            if (d_last_max_idx == 0 || d_last_max_idx == d_neps-1)
+            {
+              fprintf(stderr, "%s\n", "Reached end");
+              eps_max = d_eps(d_last_max_idx);
+              goto done_eps;
             }
           }
           eps_max = argmax_interp_p(eps,err);
+          //eps.t().print("eps=");
+          //err.t().print("err=");
+          //fprintf(stderr, "Did %d iterations, reached %6.3f @ %d.  \n", cnt, eps_max*1e3, d_last_max_idx);
         }
-        
 
+        done_eps:
+        
         cx_fcolvec amps(d_nfreqs,fill::ones);
         amp_est(amps, in+i*d_calc_len, eps_max);
+        //abs(amps.t()).eval().print("");
+        //fprintf(stderr, " ");
         
         int nn = 0;
         for (int n = 0; n < d_nfreqs; n+=2)
@@ -313,7 +357,7 @@ namespace gr {
             out1[i*vlen+nn] = amps(n);
             nn++;
         }
-        *out2++ = eps_max;
+        *out2++ = eps_max*1e3;
         //*out2++ = err_vec2.index_max();
       }
 
