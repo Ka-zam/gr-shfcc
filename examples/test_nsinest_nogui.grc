@@ -266,7 +266,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>96</value>
+      <value>16</value>
     </param>
   </block>
   <block>
@@ -1332,7 +1332,7 @@
     </param>
     <param>
       <key>freqs</key>
-      <value>np.array(fvec)*1/(1+.00)</value>
+      <value>np.array(fvec)*1/(1+.01)</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1356,7 +1356,7 @@
     </param>
     <param>
       <key>neps</key>
-      <value>11</value>
+      <value>3</value>
     </param>
     <param>
       <key>fs</key>
