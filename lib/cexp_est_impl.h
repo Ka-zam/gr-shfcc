@@ -11,11 +11,12 @@
 #ifndef INCLUDED_SHFCC_CEXP_EST_IMPL_H
 #define INCLUDED_SHFCC_CEXP_EST_IMPL_H
 
-#include <shfcc/cexp_est.h>
+#include <gnuradio/shfcc/cexp_est.h>
 #include <gnuradio/fft/fft.h>
 #include <gnuradio/thread/thread.h>
 #include <string>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 namespace gr {
@@ -24,7 +25,7 @@ namespace gr {
     class cexp_est_impl : public cexp_est
     {
      private:
-      fft::fft_complex *d_fft;
+      fft::fft_complex_fwd *d_fft;
       float d_fs;
       float d_fscale;
       int d_calc_len;

@@ -33,8 +33,7 @@ namespace gr {
     vaverage_ff::sptr
     vaverage_ff::make(int m, size_t vlen)
     {
-      return gnuradio::get_initial_sptr
-        (new vaverage_ff_impl(m, vlen));
+      return std::make_shared<vaverage_ff_impl>(m, vlen);
     }
 
     /*

@@ -21,8 +21,7 @@ namespace gr {
     ncosest_fc::sptr
     ncosest_fc::make(float fs, std::vector<float> freqs , int nfreqs, float eps_abs, int Neps, int calc_len)
     {
-      return gnuradio::get_initial_sptr
-        (new ncosest_fc_impl(fs, freqs, nfreqs, eps_abs, Neps, calc_len));
+      return std::make_shared<ncosest_fc_impl>(fs, freqs, nfreqs, eps_abs, Neps, calc_len);
     }
 
     /*

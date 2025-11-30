@@ -21,8 +21,7 @@ namespace gr {
     map_ss::sptr
     map_ss::make(const std::vector<int> &map)
     {
-      return gnuradio::get_initial_sptr
-        (new map_ss_impl(map));
+      return std::make_shared<map_ss_impl>(map);
     }
 
     /*

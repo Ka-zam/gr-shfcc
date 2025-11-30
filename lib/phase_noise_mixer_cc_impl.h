@@ -1,7 +1,7 @@
 #ifndef INCLUDED_SHFCC_PHASE_NOISE_MIXER_CC_IMPL_H
 #define INCLUDED_SHFCC_PHASE_NOISE_MIXER_CC_IMPL_H
 
-#include <shfcc/phase_noise_mixer_cc.h>
+#include <gnuradio/shfcc/phase_noise_mixer_cc.h>
 #include <gnuradio/gr_complex.h>
 #include <gnuradio/random.h>
 #include <cmath>

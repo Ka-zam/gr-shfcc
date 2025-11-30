@@ -20,8 +20,7 @@ namespace gr {
     sine_est::sptr
     sine_est::make(float fs, int calc_len, int alg, int iters, float freq_scale)
     {
-      return gnuradio::get_initial_sptr
-        (new sine_est_impl(fs, calc_len, alg, iters, freq_scale));
+      return std::make_shared<sine_est_impl>(fs, calc_len, alg, iters, freq_scale);
     }
 
     /*
@@ -43,7 +42,7 @@ namespace gr {
       d_cpx_datb = (gr_complex *) volk_malloc( d_calc_len*sizeof(gr_complex) , d_alignment );
       d_cpx_datc = (gr_complex *) volk_malloc( d_calc_len*sizeof(gr_complex) , d_alignment );
       d_flt_data = (float *) volk_malloc( d_calc_len*sizeof(float) , d_alignment );
-      d_fft = new fft::fft_complex(d_calc_len);	
+      d_fft = new fft::fft_complex_fwd(d_calc_len);	
     }
 
     /*
@@ -65,7 +64,7 @@ namespace gr {
       d_calc_len = calc_len;
       
       delete d_fft;
-      d_fft = new fft::fft_complex(calc_len);
+      d_fft = new fft::fft_complex_fwd(calc_len);
       
       volk_free( d_cpx_data );
       volk_free( d_cpx_datb );

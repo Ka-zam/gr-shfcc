@@ -1,0 +1,55 @@
+id: shfcc_ncosest_fc
+label: N-Cosine Estimator
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.ncosest_fc(${fs}, ${freqs}, ${nfreqs}, ${eps_abs}, ${Neps}, ${calc_len})
+
+parameters:
+  - id: fs
+    label: Sampling rate
+    dtype: real
+    default: samp_rate
+
+  - id: freqs
+    label: Initial frequencies
+    dtype: real_vector
+    default: '[1000.0, 2000.0]'
+
+  - id: nfreqs
+    label: Number of frequencies
+    dtype: int
+    default: '2'
+
+  - id: eps_abs
+    label: Epsilon absolute
+    dtype: real
+    default: '10.0'
+
+  - id: Neps
+    label: N epsilon
+    dtype: int
+    default: '10'
+
+  - id: calc_len
+    label: Calculation length
+    dtype: int
+    default: '1024'
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: float
+
+outputs:
+  - label: freq
+    domain: stream
+    dtype: float
+    vlen: ${nfreqs}
+  - label: amplitude
+    domain: stream
+    dtype: complex
+    vlen: ${nfreqs}
+
+file_format: 1

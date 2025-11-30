@@ -21,7 +21,7 @@
 #ifndef INCLUDED_SHFCC_VAVERAGE_FF_IMPL_H
 #define INCLUDED_SHFCC_VAVERAGE_FF_IMPL_H
 
-#include <shfcc/vaverage_ff.h>
+#include <gnuradio/shfcc/vaverage_ff.h>
 
 namespace gr {
   namespace shfcc {

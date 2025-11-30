@@ -21,8 +21,7 @@ namespace gr {
     	                double cyclic_amp_hz, 
     	                double noise_seed)
     {
-      return gnuradio::get_initial_sptr
-        (new tape_speed_ff_impl(sample_rate_hz, std_dev_hz, max_dev_hz, cyclic_freq_hz, cyclic_amp_hz, noise_seed));
+      return std::make_shared<tape_speed_ff_impl>(sample_rate_hz, std_dev_hz, max_dev_hz, cyclic_freq_hz, cyclic_amp_hz, noise_seed);
     }
 
     /*

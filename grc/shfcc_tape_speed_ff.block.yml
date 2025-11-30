@@ -1,0 +1,56 @@
+id: shfcc_tape_speed_ff
+label: Tape Variable Speed
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.tape_speed_ff(${srate}, ${stddev}, ${maxdev}, ${cyclicfreq}, ${cyclicamp}, ${seed})
+  callbacks:
+    - set_std_dev(${stddev})
+    - set_max_dev(${maxdev})
+    - set_cyclic_freq(${cyclicfreq})
+    - set_cyclic_amp(${cyclicamp})
+    - set_samp_rate(${srate})
+
+parameters:
+  - id: srate
+    label: Sample Rate Hz
+    dtype: real
+    default: samp_rate
+
+  - id: cyclicfreq
+    label: Cyclic Rate Hz
+    dtype: real
+    default: '6.0'
+
+  - id: cyclicamp
+    label: Cyclic Amplitude
+    dtype: real
+    default: '0.001'
+
+  - id: stddev
+    label: SRO Standard Deviation Hz per sample
+    dtype: real
+    default: '0.01'
+
+  - id: maxdev
+    label: Max SRO Bound Hz
+    dtype: real
+    default: '1e3'
+
+  - id: seed
+    label: Seed
+    dtype: int
+    default: '0'
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: float
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: float
+
+file_format: 1

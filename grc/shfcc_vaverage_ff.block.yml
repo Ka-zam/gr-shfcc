@@ -1,0 +1,32 @@
+id: shfcc_vaverage_ff
+label: Vector Average
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.vaverage_ff(${m}, ${vlen})
+
+parameters:
+  - id: m
+    label: Number of vectors
+    dtype: int
+    default: '8'
+
+  - id: vlen
+    label: Vector length
+    dtype: int
+    default: '1024'
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: float
+    vlen: ${vlen}
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: float
+    vlen: ${vlen}
+
+file_format: 1

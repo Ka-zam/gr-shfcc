@@ -20,8 +20,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_SHFCC_API_H
-#define INCLUDED_SHFCC_API_H
+#ifndef INCLUDED_GNURADIO_SHFCC_API_H
+#define INCLUDED_GNURADIO_SHFCC_API_H
 
 #include <gnuradio/attributes.h>
 
@@ -31,4 +31,4 @@
 #  define SHFCC_API __GR_ATTR_IMPORT
 #endif
 
-#endif /* INCLUDED_SHFCC_API_H */
+#endif /* INCLUDED_GNURADIO_SHFCC_API_H */

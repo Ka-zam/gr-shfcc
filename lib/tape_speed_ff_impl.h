@@ -7,10 +7,9 @@
 #ifndef INCLUDED_SHFCC_TAPE_SPEED_FF_IMPL_H
 #define INCLUDED_SHFCC_TAPE_SPEED_FF_IMPL_H
 
-#include <gnuradio/filter/fractional_interpolator_ff.h>
 #include <gnuradio/filter/mmse_fir_interpolator_ff.h>
-#include <gnuradio/analog/fastnoise_source_f.h>
-#include <shfcc/tape_speed_ff.h>
+#include <gnuradio/analog/fastnoise_source.h>
+#include <gnuradio/shfcc/tape_speed_ff.h>
 
 namespace gr {
   namespace shfcc {

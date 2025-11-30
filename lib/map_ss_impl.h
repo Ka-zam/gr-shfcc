@@ -21,7 +21,7 @@
 #ifndef INCLUDED_SHFCC_MAP_SS_IMPL_H
 #define INCLUDED_SHFCC_MAP_SS_IMPL_H
 
-#include <shfcc/map_ss.h>
+#include <gnuradio/shfcc/map_ss.h>
 
 namespace gr {
   namespace shfcc {

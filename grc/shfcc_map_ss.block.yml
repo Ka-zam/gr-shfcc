@@ -1,0 +1,25 @@
+id: shfcc_map_ss
+label: Map Shorts
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.map_ss(${map})
+
+parameters:
+  - id: map
+    label: Map
+    dtype: int_vector
+    default: '[0, 1, 2, 3]'
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: short
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: short
+
+file_format: 1

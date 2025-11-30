@@ -11,7 +11,7 @@
 #ifndef INCLUDED_SHFCC_NCOSEST_FC_IMPL_H
 #define INCLUDED_SHFCC_NCOSEST_FC_IMPL_H
 
-#include <shfcc/ncosest_fc.h>
+#include <gnuradio/shfcc/ncosest_fc.h>
 #include <volk/volk.h>
 #include <iostream>
 #include <armadillo>

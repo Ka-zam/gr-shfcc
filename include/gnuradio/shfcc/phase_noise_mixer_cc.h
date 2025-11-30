@@ -1,0 +1,42 @@
+/* -*- c++ -*- */
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef INCLUDED_GNURADIO_SHFCC_PHASE_NOISE_MIXER_CC_H
+#define INCLUDED_GNURADIO_SHFCC_PHASE_NOISE_MIXER_CC_H
+
+#include <gnuradio/shfcc/api.h>
+#include <gnuradio/sync_block.h>
+#include <memory>
+
+namespace gr {
+namespace shfcc {
+
+/*!
+ * \brief Mixer with optional phase noise impairment
+ * \ingroup shfcc
+ *
+ * \details
+ * Mixer with variable phase noise
+ */
+class SHFCC_API phase_noise_mixer_cc : virtual public gr::sync_block
+{
+public:
+    typedef std::shared_ptr<phase_noise_mixer_cc> sptr;
+
+    static sptr make(double fc, double fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair);
+
+    virtual void set_fc(double fc) = 0;
+    virtual void set_fc_nominal(double fc_nom) = 0;
+    virtual void set_k0(float k0) = 0;
+    virtual void set_k2(float k2) = 0;
+    virtual void set_cfo_ampl(float cfo_ampl) = 0;
+    virtual void set_cfo_freq(float cfo_freq) = 0;
+    virtual void set_impair(bool impair) = 0;
+};
+
+} // namespace shfcc
+} // namespace gr
+
+#endif /* INCLUDED_GNURADIO_SHFCC_PHASE_NOISE_MIXER_CC_H */

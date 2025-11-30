@@ -11,8 +11,7 @@ namespace gr {
     phase_noise_mixer_cc::sptr
     phase_noise_mixer_cc::make(double fc, double fs, float k0, float k2, float cfo_ampl, float cfo_freq, bool impair)
     {
-      return gnuradio::get_initial_sptr
-        (new phase_noise_mixer_cc_impl(fc, fs, k0, k2, cfo_ampl, cfo_freq, impair));
+      return std::make_shared<phase_noise_mixer_cc_impl>(fc, fs, k0, k2, cfo_ampl, cfo_freq, impair);
     }
 
     phase_noise_mixer_cc_impl::phase_noise_mixer_cc_impl(double fc, 

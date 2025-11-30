@@ -1,0 +1,56 @@
+id: shfcc_cexp_est
+label: Complex Exp. Est.
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.cexp_est(${fs}, ${calc_len}, ${alg}, ${iters}, ${freq_scale})
+  callbacks:
+    - set_calc_len(${calc_len})
+
+parameters:
+  - id: fs
+    label: Sampling rate
+    dtype: real
+    default: samp_rate
+
+  - id: calc_len
+    label: Calculation Length
+    dtype: int
+    default: '1024'
+
+  - id: alg
+    label: Algorithm
+    dtype: int
+    default: '1'
+    options: ['1', '2']
+
+  - id: iters
+    label: Iterations
+    dtype: int
+    default: '2'
+    options: ['1', '2', '3', '4']
+
+  - id: freq_scale
+    label: Freq scale
+    dtype: float
+    default: '1.0'
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: complex
+
+outputs:
+  - label: freq
+    domain: stream
+    dtype: float
+  - label: amplitude
+    domain: stream
+    dtype: complex
+  - label: snr
+    domain: stream
+    dtype: float
+    optional: true
+
+file_format: 1

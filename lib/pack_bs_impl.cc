@@ -688,8 +688,7 @@ namespace gr {
     pack_bs::sptr
     pack_bs::make(endianness_t endianness)
     {
-      return gnuradio::get_initial_sptr
-        (new pack_bs_impl(endianness));
+      return std::make_shared<pack_bs_impl>(endianness);
     }
 
     /*

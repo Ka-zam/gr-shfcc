@@ -1,0 +1,63 @@
+id: shfcc_phase_noise_mixer_cc
+label: Phase Noise Mixer
+category: '[shfcc]'
+
+templates:
+  imports: from gnuradio import shfcc
+  make: shfcc.phase_noise_mixer_cc(${fc}, ${fs}, ${k0}, ${k2}, ${cfo_ampl}, ${cfo_freq}, ${impair})
+  callbacks:
+    - set_fc_nominal(${fc})
+    - set_k0(${k0})
+    - set_k2(${k2})
+    - set_cfo_ampl(${cfo_ampl})
+    - set_cfo_freq(${cfo_freq})
+    - set_impair(${impair})
+
+parameters:
+  - id: fc
+    label: Mixer frequency
+    dtype: real
+    default: 0
+
+  - id: fs
+    label: Sampling rate
+    dtype: real
+    default: samp_rate
+
+  - id: k0
+    label: K0
+    dtype: real
+    default: 0
+
+  - id: k2
+    label: K2
+    dtype: real
+    default: 0
+
+  - id: cfo_ampl
+    label: CFO Amplitude
+    dtype: real
+    default: 0
+
+  - id: cfo_freq
+    label: CFO Frequency
+    dtype: real
+    default: 0
+
+  - id: impair
+    label: Impairment
+    dtype: bool
+    default: 'False'
+    options: ['True', 'False']
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: complex
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: complex
+
+file_format: 1

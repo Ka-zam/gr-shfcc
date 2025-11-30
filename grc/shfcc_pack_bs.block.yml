@@ -1,0 +1,29 @@
+id: shfcc_pack_bs
+label: Pack Bytes to Shorts
+category: '[shfcc]'
+
+templates:
+  imports: |-
+    from gnuradio import shfcc
+    from gnuradio import gr
+  make: shfcc.pack_bs(${endianness})
+
+parameters:
+  - id: endianness
+    label: Endianness
+    dtype: enum
+    default: gr.GR_MSB_FIRST
+    options: [gr.GR_MSB_FIRST, gr.GR_LSB_FIRST]
+    option_labels: [MSB First, LSB First]
+
+inputs:
+  - label: in
+    domain: stream
+    dtype: byte
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: short
+
+file_format: 1

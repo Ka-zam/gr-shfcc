@@ -10,7 +10,7 @@
 #ifndef INCLUDED_SHFCC_SINE_EST_IMPL_H
 #define INCLUDED_SHFCC_SINE_EST_IMPL_H
 
-#include <shfcc/sine_est.h>
+#include <gnuradio/shfcc/sine_est.h>
 #include <gnuradio/fft/fft.h>
 #include <gnuradio/thread/thread.h>
 #include <volk/volk.h>
@@ -24,7 +24,7 @@ namespace gr {
     class sine_est_impl : public sine_est
     {
      private:
-      fft::fft_complex *d_fft;
+      fft::fft_complex_fwd *d_fft;
       float d_fs;
       float d_fscale;
       int d_calc_len;

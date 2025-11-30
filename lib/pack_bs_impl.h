@@ -678,7 +678,7 @@
 #ifndef INCLUDED_SHFCC_PACK_BS_IMPL_H
 #define INCLUDED_SHFCC_PACK_BS_IMPL_H
 
-#include <shfcc/pack_bs.h>
+#include <gnuradio/shfcc/pack_bs.h>
 
 namespace gr {
   namespace shfcc {
